@@ -7,244 +7,202 @@
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #080E1C;
-  --surface: #0F1828;
-  --surface2: #162035;
-  --border: #1E2E4A;
-  --border2: #2A3F63;
-  --accent: #C9A84C;
-  --accent-dim: rgba(201,168,76,0.12);
-  --text: #EEF2F8;
-  --muted: #7A90B0;
-  --muted2: #445570;
-  --green: #2ECC71;
-  --green-dim: rgba(46,204,113,0.12);
-  --red: #E74C3C;
-  --red-dim: rgba(231,76,60,0.12);
+  --bg: #080E1C; --surface: #0F1828; --surface2: #162035;
+  --border: #1E2E4A; --border2: #2A3F63;
+  --accent: #C9A84C; --accent-dim: rgba(201,168,76,0.12);
+  --text: #EEF2F8; --muted: #7A90B0; --muted2: #445570;
+  --green: #2ECC71; --green-dim: rgba(46,204,113,0.12);
+  --red: #E74C3C; --red-dim: rgba(231,76,60,0.12);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); background-image: radial-gradient(ellipse at top, #0F1E3A 0%, #080E1C 60%); color: var(--text); font-family: 'DM Sans', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; display: flex; flex-direction: column; }
 
-.header { border-top: 2px solid var(--accent); border-bottom: 1px solid var(--border); padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; background: rgba(8,14,28,0.97); flex-shrink: 0; }
-.logo-wrap { display: flex; align-items: center; gap: 10px; }
-.logo { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 3px; color: #fff; line-height: 1; }
-.logo span { color: var(--accent); font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: 3px; display: block; margin-top: 2px; }
+/* HEADER */
+.hdr { border-top: 2px solid var(--accent); border-bottom: 1px solid var(--border); padding: 6px 14px; display: flex; align-items: center; justify-content: space-between; background: #080E1C; flex-shrink: 0; }
+.logo { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 3px; color: #fff; line-height: 1; display: flex; align-items: center; gap: 8px; }
+.logo span { color: var(--accent); font-size: 8px; font-family: 'DM Mono', monospace; letter-spacing: 2px; display: block; }
+.hist-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 9px; padding: 4px 10px; cursor: pointer; border-radius: 3px; letter-spacing: 1px; text-transform: uppercase; }
+.hist-btn:hover { border-color: var(--accent); color: var(--accent); }
+.hist-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 
-.nav { display: flex; gap: 3px; }
-.nav-btn { background: none; border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; padding: 5px 12px; cursor: pointer; border-radius: 3px; transition: all 0.2s; text-transform: uppercase; }
-.nav-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-.nav-btn:hover:not(.active) { border-color: var(--border2); color: var(--text); }
+/* STATUS */
+.sbar { display: flex; gap: 5px; padding: 6px 14px; background: var(--bg); flex-shrink: 0; border-bottom: 1px solid var(--border); }
+.sc { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 4px 8px; flex: 1; }
+.sc-l { font-family: 'DM Mono', monospace; font-size: 7px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+.sc-n { font-family: 'Bebas Neue', sans-serif; font-size: 15px; color: var(--accent); line-height: 1.1; }
+.sc-n.pos { color: var(--green); }
+.sc-n.neg { color: var(--red); }
 
-.main { display: none; } .body-wrap { display: flex; flex: 1; overflow: hidden; } .sidebar { width: 190px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; background: var(--surface); } .table-wrap { flex: 1; overflow-y: auto; }
-.view { display: none; }
-.view.active { display: block; }
+/* BODY */
+.body { display: flex; flex: 1; overflow: hidden; }
 
-.sec { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; margin-top: 6px; display: flex; align-items: center; gap: 8px; }
-.sec::after { content: ''; flex: 1; height: 1px; background: var(--border); }
-
-/* UPLOAD ZONE */
-.upload-zone { border: 2px dashed var(--border2); border-radius: 8px; padding: 18px 20px; text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; background: var(--surface); }
-.upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: var(--accent-dim); }
-.upload-icon { font-size: 24px; margin-bottom: 6px; opacity: 0.6; }
-.upload-title { font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; color: var(--accent); margin-bottom: 3px; }
-.upload-sub { font-size: 11px; color: var(--muted); }
-input[type=file] { display: none; }
-
-/* PREVIEW */
-.preview-wrap { position: relative; margin-bottom: 16px; border-radius: 6px; overflow: hidden; border: 1px solid var(--border); }
-.preview-wrap img { width: 100%; display: block; max-height: 300px; object-fit: contain; background: #000; }
-.preview-close { position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.7); border: 1px solid var(--border2); color: var(--text); font-size: 12px; padding: 4px 10px; border-radius: 3px; cursor: pointer; font-family: 'DM Mono', monospace; }
-
-/* ANALYZE BTN */
-.analyze-btn { width: 100%; padding: 11px; background: var(--accent); color: #0a0a0a; border: none; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 3px; cursor: pointer; transition: all 0.2s; margin-bottom: 10px; }
-.analyze-btn:hover { background: #D4B05A; transform: translateY(-1px); }
-.analyze-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-/* LOADING */
-.loading-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 24px; text-align: center; margin-bottom: 16px; }
-.loading-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--accent); margin-bottom: 8px; }
-.loading-sub { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; }
-.spinner { width: 32px; height: 32px; border: 3px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 12px auto; }
+/* SIDEBAR */
+.side { width: 185px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 8px; gap: 7px; background: var(--surface); overflow-y: auto; }
+.upload-zone { border: 2px dashed var(--border2); border-radius: 5px; padding: 12px 8px; text-align: center; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+.upload-zone:hover { border-color: var(--accent); background: var(--accent-dim); }
+.upload-icon { font-size: 18px; margin-bottom: 3px; }
+.upload-title { font-family: 'Bebas Neue', sans-serif; font-size: 12px; letter-spacing: 2px; color: var(--accent); }
+.upload-sub { font-size: 9px; color: var(--muted); }
+.abtn { width: 100%; padding: 8px; background: var(--accent); color: #0a0a0a; border: none; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 2px; cursor: pointer; }
+.abtn:hover { background: #D4B05A; }
+.abtn:disabled { opacity: 0.5; cursor: not-allowed; }
+.endbtn { width: 100%; padding: 7px; background: none; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 3px; }
+.endbtn:hover { border-color: var(--accent); color: var(--accent); }
+.slabel { font-family: 'DM Mono', monospace; font-size: 7px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding-top: 4px; border-top: 1px solid var(--border); }
+.sstat { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; }
+.sstat-l { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; }
+.sstat-v { font-family: 'Bebas Neue', sans-serif; font-size: 13px; color: var(--accent); }
+.sstat-v.pos { color: var(--green); }
+.sstat-v.neg { color: var(--red); }
+.spacer { flex: 1; }
+.spinner { width: 20px; height: 20px; border: 2px solid var(--border2); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 4px; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
-/* TOURNAMENT CARDS */
-.t-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.t-table thead { position: sticky; top: 0; z-index: 10; background: var(--surface); } .t-table thead tr { border-bottom: 1px solid var(--border2); }
-.t-table thead th { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 6px; text-align: left; font-weight: 400; }
-.t-table thead th:last-child { text-align: right; }
-.t-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-.t-table tbody tr:hover { background: var(--surface2); }
-.t-table tbody tr.done { opacity: 0.6; }
-.t-table td { padding: 5px 6px; vertical-align: middle; }
-.t-table td:last-child { text-align: right; }
+/* TABLE */
+.twrap { flex: 1; overflow-y: auto; }
+.ttable { width: 100%; border-collapse: collapse; }
+.ttable thead { position: sticky; top: 0; z-index: 5; background: var(--surface); }
+.ttable th { font-family: 'DM Mono', monospace; font-size: 7px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding: 6px 8px; text-align: left; font-weight: 400; border-bottom: 1px solid var(--border2); }
+.ttable tbody tr { border-bottom: 1px solid var(--border); }
+.ttable tbody tr:hover { background: var(--surface2); }
+.ttable tbody tr.done { opacity: 0.55; }
+.ttable td { padding: 4px 8px; vertical-align: middle; font-size: 12px; }
+.site-tag { font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 5px; border-radius: 2px; white-space: nowrap; }
+.gg { background: rgba(52,152,219,0.15); color: #5dade2; border: 1px solid rgba(52,152,219,0.3); }
+.ps { background: rgba(155,89,182,0.15); color: #a569bd; border: 1px solid rgba(155,89,182,0.3); }
+.wpt { background: rgba(46,204,113,0.15); color: #58d68d; border: 1px solid rgba(46,204,113,0.3); }
+.ya { background: rgba(241,196,15,0.15); color: #f4d03f; border: 1px solid rgba(241,196,15,0.3); }
+.pp { background: rgba(231,76,60,0.15); color: #ec7063; border: 1px solid rgba(231,76,60,0.3); }
+.other { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+.tname { font-size: 11px; color: var(--text); max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tbi { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); white-space: nowrap; }
+.tprofit { font-family: 'Bebas Neue', sans-serif; font-size: 14px; white-space: nowrap; }
+.tprofit.pos { color: var(--green); }
+.tprofit.neg { color: var(--red); }
+.btngrp { display: flex; gap: 3px; }
+.tbtn { padding: 3px 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 8px; cursor: pointer; border-radius: 3px; white-space: nowrap; }
+.tbtn.bust { border-color: var(--red); color: var(--red); background: var(--red-dim); }
+.tbtn.itm { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.tbtn.del { color: var(--muted2); }
+.edit-inp { background: transparent; border: none; font-family: inherit; font-size: inherit; color: inherit; width: 100%; padding: 0; }
+.edit-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
+.bi-inp { background: transparent; border: none; font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); width: 60px; padding: 0; }
+.bi-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
+.site-sel { background: transparent; border: none; font-family: 'DM Mono', monospace; font-size: 8px; cursor: pointer; padding: 0; color: inherit; }
+.site-sel:focus { outline: none; }
+.empty-msg { text-align: center; padding: 40px; color: var(--muted2); font-family: 'DM Mono', monospace; font-size: 10px; }
 
-.t-site-badge { font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 5px; border-radius: 2px; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
-.t-site-gg { background: rgba(52,152,219,0.15); color: #5dade2; border: 1px solid rgba(52,152,219,0.3); }
-.t-site-ps { background: rgba(155,89,182,0.15); color: #a569bd; border: 1px solid rgba(155,89,182,0.3); }
-.t-site-wpt { background: rgba(46,204,113,0.15); color: #58d68d; border: 1px solid rgba(46,204,113,0.3); }
-.t-site-ya { background: rgba(241,196,15,0.15); color: #f4d03f; border: 1px solid rgba(241,196,15,0.3); }
-.t-site-pp { background: rgba(231,76,60,0.15); color: #ec7063; border: 1px solid rgba(231,76,60,0.3); }
-.t-site-other { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
-
-.t-name-cell { color: var(--text); font-size: 11px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-.t-buyin-cell { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); white-space: nowrap; }
-.t-profit-cell { font-family: 'Bebas Neue', sans-serif; font-size: 14px; white-space: nowrap; }
-.t-profit-cell.pos { color: var(--green); }
-.t-profit-cell.neg { color: var(--red); }
-
-.t-btn-row { display: flex; gap: 4px; justify-content: flex-end; }
-.t-btn { padding: 3px 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; cursor: pointer; border-radius: 3px; transition: all 0.15s; text-transform: uppercase; white-space: nowrap; }
-.t-btn:hover { border-color: var(--border2); color: var(--text); }
-.t-btn.bust { border-color: var(--red); color: var(--red); background: var(--red-dim); }
-.t-btn.itm { border-color: var(--green); color: var(--green); background: var(--green-dim); }
-.t-btn.del { border-color: var(--border); color: var(--muted2); font-size: 10px; padding: 3px 6px; }
-
-.t-site-select { background: transparent; border: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 8px; cursor: pointer; padding: 0; }
-.t-site-select:focus { outline: none; }
-.t-buyin-inp { background: transparent; border: none; color: var(--accent); font-family: 'Bebas Neue', sans-serif; font-size: 14px; width: 60px; padding: 0; text-align: left; }
-.t-buyin-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
-.t-name-inp { background: transparent; border: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 11px; width: 100%; padding: 0; }
-.t-name-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
+/* HISTORICO */
+.hist-wrap { flex: 1; overflow-y: auto; padding: 14px; display: none; }
+.hstat3 { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; margin-bottom: 16px; }
+.hstat { background: var(--surface); border: 1px solid var(--border); border-radius: 5px; padding: 10px; }
+.hstat-n { font-family: 'Bebas Neue', sans-serif; font-size: 24px; color: var(--accent); line-height: 1; }
+.hstat-n.pos { color: var(--green); }
+.hstat-n.neg { color: var(--red); }
+.hstat-l { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; }
+.hcard { background: var(--surface); border: 1px solid var(--border); border-radius: 5px; margin-bottom: 8px; overflow: hidden; }
+.hcard-hdr { display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; cursor: pointer; }
+.hcard-hdr:hover { background: var(--surface2); }
+.hcard-date { font-size: 13px; font-weight: 500; }
+.hcard-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); margin-top: 2px; }
+.hcard-profit { font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
+.hcard-profit.pos { color: var(--green); }
+.hcard-profit.neg { color: var(--red); }
+.hcard-body { display: none; border-top: 1px solid var(--border); }
+.hcard-body.open { display: block; }
+.hcard-row { display: flex; justify-content: space-between; padding: 7px 14px; border-bottom: 1px solid var(--border); font-size: 12px; }
+.hcard-row:last-child { border-bottom: none; }
 
 /* ITM MODAL */
-.modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
-.modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent); border-radius: 12px 12px 0 0; padding: 24px 20px; width: 100%; max-width: 480px; animation: slideUp 0.25s ease; }
+.modal-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+.modal { background: var(--surface); border: 1px solid var(--border); border-top: 2px solid var(--accent); border-radius: 10px 10px 0 0; padding: 20px 16px; width: 100%; max-width: 400px; animation: slideUp 0.2s ease; }
 @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-.modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 2px; color: var(--accent); margin-bottom: 4px; }
-.modal-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
-.modal-inp { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 20px; padding: 14px 16px; border-radius: 4px; margin-bottom: 12px; text-align: center; }
+.modal-title { font-family: 'Bebas Neue', sans-serif; font-size: 18px; letter-spacing: 2px; color: var(--accent); margin-bottom: 3px; }
+.modal-sub { font-size: 11px; color: var(--muted); margin-bottom: 12px; }
+.modal-inp { width: 100%; background: var(--surface2); border: 1px solid var(--border); color: var(--text); font-size: 20px; padding: 12px; border-radius: 4px; margin-bottom: 10px; text-align: center; font-family: 'Bebas Neue', sans-serif; }
 .modal-inp:focus { outline: none; border-color: var(--accent); }
 .modal-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-.modal-btn { padding: 14px; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 16px; letter-spacing: 2px; cursor: pointer; border: none; transition: all 0.15s; }
-.modal-btn.confirm { background: var(--green); color: #000; }
-.modal-btn.confirm:hover { background: #27ae60; }
-.modal-btn.cancel { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
-
-/* STATUS BAR */
-.status-bar { display: flex; gap: 6px; padding: 8px 14px; background: var(--bg); flex-shrink: 0; border-bottom: 1px solid var(--border); }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 5px 10px; display: flex; align-items: center; gap: 8px; flex: 1; }
-.stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent); line-height: 1; }
-.stat-n.pos { color: var(--green); }
-.stat-n.neg { color: var(--red); }
-.stat-l { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-
-/* HISTORY */
-.hist-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
-.hist-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 14px; cursor: pointer; }
-.hist-header:hover { background: var(--surface2); }
-.hist-date { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); }
-.hist-profit { font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
-.hist-profit.pos { color: var(--green); }
-.hist-profit.neg { color: var(--red); }
-.hist-body { display: none; border-top: 1px solid var(--border); }
-.hist-body.open { display: block; }
-.hist-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
-.hist-row:last-child { border-bottom: none; }
-
-.sidebar-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding-top: 4px; border-top: 1px solid var(--border); } .side-stat { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; } .side-stat-l { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; } .side-stat-v { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); } .side-stat-v.pos { color: var(--green); } .side-stat-v.neg { color: var(--red); }
-.empty { text-align: center; padding: 48px 20px; color: var(--muted2); }
-.empty .big { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--border2); letter-spacing: 4px; display: block; margin-bottom: 8px; }
-
-.t-site-select { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 8px; border-radius: 3px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
-.t-site-select:focus { outline: none; border-color: var(--accent); }
-.t-buyin-inp { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); font-family: 'Bebas Neue', sans-serif; font-size: 18px; width: 90px; padding: 2px 6px; border-radius: 3px; text-align: right; }
-.t-buyin-inp:focus { outline: none; border-color: var(--accent); }
-.t-name-inp { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 3px 0; margin-bottom: 8px; }
-.t-name-inp:focus { outline: none; border-bottom-color: var(--accent); }
-.end-session-btn { width: 100%; padding: 8px; background: none; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; } .end-session-btn:hover { border-color: var(--accent); color: var(--accent); }
-.end-session-btn:hover { border-color: var(--accent); color: var(--accent); }
-
-.tip { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 11px; color: var(--muted); line-height: 1.5; }
-.tip strong { color: var(--accent); font-weight: 500; }
+.mbtn { padding: 12px; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; cursor: pointer; border: none; }
+.mbtn.ok { background: var(--green); color: #000; }
+.mbtn.cancel { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 </style>
 </head>
 <body>
 
-<div class="header">
-  <div class="logo-wrap">
-    <img id="logo-img" style="height:24px;width:auto;" alt="Heroes">
-    <div class="logo">Heroes<span>Screen Tracker</span></div>
+<div class="hdr">
+  <div class="logo">
+    <img src="data:image/png;base64,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" style="height:26px;width:auto;" alt="Heroes">
+    Heroes <span>Screen Tracker</span>
   </div>
-  <button class="nav-btn" onclick="showView('historico', this)" id="btn-historico" style="background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;cursor:pointer;border-radius:3px;">Histórico</button>
+  <button class="hist-btn" id="hist-btn" onclick="toggleHistorico()">Histórico</button>
 </div>
 
-<div class="main">
+<div class="sbar" id="sbar">
+  <div class="sc"><div class="sc-l">Ativos</div><div class="sc-n" id="s-at">0</div></div>
+  <div class="sc"><div class="sc-l">Total</div><div class="sc-n" id="s-tot">0</div></div>
+  <div class="sc"><div class="sc-l">Investido</div><div class="sc-n" id="s-inv">$0</div></div>
+  <div class="sc"><div class="sc-l">ABI</div><div class="sc-n" id="s-abi">$0</div></div>
+  <div class="sc"><div class="sc-l">Prêmios</div><div class="sc-n" id="s-pre">$0</div></div>
+  <div class="sc"><div class="sc-l">Lucro</div><div class="sc-n" id="s-luc">$0</div></div>
+</div>
 
-  <!-- STATUS BAR -->
-  <div class="status-bar" id="status-bar-top">
-    <div class="stat"><div><div class="stat-l">Ativos</div><div class="stat-n" id="s-ativos">0</div></div></div>
-    <div class="stat"><div><div class="stat-l">Total</div><div class="stat-n" id="s-total">0</div></div></div>
-    <div class="stat"><div><div class="stat-l">Investido</div><div class="stat-n" id="s-inv">$0</div></div></div>
-    <div class="stat"><div><div class="stat-l">ABI</div><div class="stat-n" id="s-abi">$0</div></div></div>
-    <div class="stat"><div><div class="stat-l">Prêmios</div><div class="stat-n" id="s-premios">$0</div></div></div>
-    <div class="stat"><div><div class="stat-l">Lucro</div><div class="stat-n" id="s-lucro">$0</div></div></div>
+<div class="body">
+
+  <div class="side" id="side">
+    <div class="upload-zone" onclick="document.getElementById('fi').click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
+      <div class="upload-icon">📸</div>
+      <div class="upload-title">Print</div>
+      <div class="upload-sub">Clique ou arraste</div>
+    </div>
+    <input type="file" id="fi" accept="image/*" onchange="hf(event)" style="display:none;">
+
+    <div id="prev-wrap" style="display:none;">
+      <img id="prev-img" style="width:100%;border-radius:4px;border:1px solid var(--border);display:block;margin-bottom:5px;">
+      <button onclick="clearPrev()" style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:8px;padding:3px;border-radius:3px;cursor:pointer;">✕ Remover</button>
+    </div>
+
+    <button class="abtn" id="abtn" onclick="analyze()" style="display:none;">Identificar →</button>
+
+    <div id="loading" style="display:none;text-align:center;padding:8px 0;">
+      <div class="spinner"></div>
+      <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);">Analisando...</div>
+    </div>
+
+    <div class="slabel" id="sl" style="display:none;">Sessão</div>
+    <div id="sstats" style="display:none;">
+      <div class="sstat"><span class="sstat-l">ITM</span><span class="sstat-v" id="ss-itm">0</span></div>
+      <div class="sstat"><span class="sstat-l">Bust</span><span class="sstat-v" id="ss-bust">0</span></div>
+      <div class="sstat"><span class="sstat-l">ITM%</span><span class="sstat-v" id="ss-pct">0%</span></div>
+      <div class="sstat"><span class="sstat-l">ROI</span><span class="sstat-v" id="ss-roi">0%</span></div>
+    </div>
+
+    <div class="spacer"></div>
+    <button class="endbtn" onclick="endSession()">Encerrar Sessão</button>
   </div>
 
-  <!-- BODY WRAP -->
-  <div class="body-wrap" id="view-tracker">
-
-    <!-- SIDEBAR -->
-    <div class="sidebar">
-      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
-        <div class="upload-icon">📸</div>
-        <div class="upload-title">Print</div>
-        <div class="upload-sub">Clique ou arraste</div>
-      </div>
-      <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-
-      <div id="preview-wrap" style="display:none;">
-        <img id="preview-img" alt="preview" style="width:100%;border-radius:4px;border:1px solid var(--border);display:block;margin-bottom:6px;">
-        <button style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;padding:4px;border-radius:3px;cursor:pointer;" onclick="clearPreview()">✕ Remover</button>
-      </div>
-
-      <button class="analyze-btn" id="analyze-btn" onclick="analyzeImage()" style="display:none;">Identificar →</button>
-
-      <div id="loading-card" style="display:none;text-align:center;padding:12px 0;">
-        <div class="spinner" style="width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 6px;"></div>
-        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);">Analisando...</div>
-      </div>
-
-      <div class="sidebar-label" id="sidebar-stats-label" style="display:none;">Sessão</div>
-      <div id="sidebar-stats" style="display:none;">
-        <div class="side-stat"><span class="side-stat-l">ITM</span><span class="side-stat-v" id="ss-itm">0</span></div>
-        <div class="side-stat"><span class="side-stat-l">Bust</span><span class="side-stat-v" id="ss-bust">0</span></div>
-        <div class="side-stat"><span class="side-stat-l">ITM%</span><span class="side-stat-v" id="ss-itmpct">0%</span></div>
-        <div class="side-stat"><span class="side-stat-l">ROI</span><span class="side-stat-v" id="ss-roi">0%</span></div>
-      </div>
-
-      <div style="flex:1;"></div>
-      <button class="end-session-btn" onclick="endSession()">Encerrar Sessão</button>
-    </div>
-
-    <!-- TABLE -->
-    <div class="table-wrap">
-      <div id="torneios-list"></div>
-    </div>
-
+  <div class="twrap" id="twrap">
+    <table class="ttable">
+      <thead><tr><th>Site</th><th>Torneio</th><th>BI</th><th>Resultado</th><th></th></tr></thead>
+      <tbody id="tbody"><tr><td colspan="5" class="empty-msg">Envie um print para adicionar torneios</td></tr></tbody>
+    </table>
   </div>
 
-  <!-- HISTORICO -->
-  <div id="view-historico" style="display:none;padding:16px;overflow-y:auto;flex:1;">
-    <div class="status-bar">
-      <div class="stat"><span class="stat-n" id="h-sessoes">0</span><span class="stat-l">Sessões</span></div>
-      <div class="stat"><span class="stat-n" id="h-torneios">0</span><span class="stat-l">Torneios</span></div>
-      <div class="stat"><span class="stat-n" id="h-roi">0%</span><span class="stat-l">ROI</span></div>
-      <div class="stat"><span class="stat-n" id="h-lucro">$0</span><span class="stat-l">Lucro Total</span></div>
-    </div>
-    <div id="hist-list"></div>
+  <div class="hist-wrap" id="hist-wrap">
+    <div class="hstat3" id="hstats"></div>
+    <div id="hlist"></div>
   </div>
 
 </div>
 
-<!-- ITM MODAL -->
-<div id="itm-modal" class="modal-overlay" style="display:none;" onclick="closeModal(event)">
+<div class="modal-ov" id="modal" style="display:none;" onclick="closeModal(event)">
   <div class="modal">
-    <div class="modal-title">Registrar ITM</div>
+    <div class="modal-title">ITM — Prêmio</div>
     <div class="modal-sub" id="modal-sub"></div>
-    <input type="number" class="modal-inp" id="modal-premio" placeholder="Prêmio recebido ($)" step="0.01" min="0">
+    <input type="number" class="modal-inp" id="modal-val" placeholder="$0.00" step="0.01" min="0">
     <div class="modal-btns">
-      <button class="modal-btn cancel" onclick="closeModalDirect()">Cancelar</button>
-      <button class="modal-btn confirm" onclick="confirmITM()">Confirmar ITM</button>
+      <button class="mbtn cancel" onclick="document.getElementById('modal').style.display='none'">Cancelar</button>
+      <button class="mbtn ok" onclick="confirmITM()">Confirmar</button>
     </div>
   </div>
 </div>
@@ -253,402 +211,234 @@ input[type=file] { display: none; }
 const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx3LbCny5wQ_J6M5-J1EMmhwj5hd83EdWhr6Qv_X5XERxQyKN0AzZ5fxXH8CTuyO58Y/exec';
 const SHEET_ID = '1W7hEKSNEh2W03bDj9d_qIQkkoWHQqTYuxvC9FY3PMp8';
 const SHEET_NAME = 'tracker';
-const LOGO_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAHgAAABQCAYAAADSm7GJAAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAATiUlEQVR4nO1dfWxb13U/9z2KlGXHtuzIrmvXjWM3MqI4SKIZDty0Toq5Tbw1HwuUYkjbBFiRbgXSFUW3dB/Ns5thQLpi60eGzA3QIknnojKWGvIi25U7yR9BZcNSYlmyPkhKJE2KomiKfI8S3/c9+0P3Uk8MFUv8sCSHP+ABAnXfPeeec8+5536dB1BBBRVUUEEFFSwGyGIzcJNAEHH2D4QAAGDe0hUsTSAiQUShvb3dhYguRBQRcc5OzMqLiOhi7wgfVX45Ytk3hilEAAAghNhzFCOtra3uK1euuAEAdu3aZRw4cMCAOSwYEUX2JyWELGsrdy02A4UCEQUAIEypNgBAU1OT+wc/+MHONWvW3OfxeHZVV1dv93g8GwFgvcvlWvHII494AABcLpeuqqoKAAld12Oapvl1Xb8iy/IHr7zyygAhxHDQEQEACSF0EZr58UNzc7PIlAsAACdPnlwXDAafSafTv9Q0zWuaJhYK0zRR0zSvoii/CgaDz5w8eXIdp4OIQnNzs5ifqwqKBhsfs4odHBzcI8vy66qqjuXTFSLqiKixR2ePwR49z/8/1DNUVR2TZfn1wcHBPXPxUUEJgIjZoSQQCHwhnU6/a1mWUxeWbduGbdtGPkUtxIgd9WQJWJaF6XT63UAg8IV8PC1lLOkgi1kKEkKwr6+vYfPmzf+yZs2aJ/m/AcCmlIIgCAQAsu7TNE0TAIZN0/Tpuh6yLCuqaVrKMAwDAMDtdrurq6vXulyuTR6PZ2tVVdUOALizqqqqykHeppSiIAjA6iYAALIsH4tEIv/c0NDQh9MBHqmMzwUAZyJZYXR09GVd1zPMoGzbti3btmeZsK7rwUQi8WYoFHq2u7v7M+BQ+Dwgdnd3fyYUCj2bSCTe1HU96KzbQc9mtDKjo6MvA4veHbxWMB9w93fx4sX6dDp9zilo5jopEzRNpVL/OzY29lRzc/OqPPWIOD0f/qjnQ8ppbm5eNTY29lQymXxX13XKyFM2FGQ7VjqdPnfx4sV6J88V3ABcUF6v9wlVVSccYyPl46JlWTgxMfEbn8/XmPOuWMiCBc5eIJmlcJ/P15hMJo84xnyL8WIiIqqqOuH1ep9w8l7BHOACikQiL9q2nRUod43Mas77/f6HHO8IeIMVqwL44Ctc2WjZ7/c/lE6nzzs9N+9wtm1jJBJ50dmGCnLABRMIBKQcS7GYO9bj8fj3gAU7uQooI1+Cw6pJPB7/nq7rej4eA4GA5GxLBQxcINFo9PvcJbMxz0REnJqa8vK5KCKSxVhwYAssBGB6Dj41NeXNx2s0Gv2+s00fe3BBhEKhb+QTmCzLHUeOHNnoLFsoJEkSJEkqyuo5D0eOHNkoy3JHPp5DodA3SsHvsgd3fcPDw583DIOPaVlBJZPJlqamJrezbBG0SL6/i+G7qanJnUwmW3KUbBmGYQ8PD3++FHwvW7CxTTh9+vRGTdNGmXBsPg1JJpMnAMDFAp6irI679Pb29i3t7e1bnL8VyT8BAFcymTzBgi0eEFJN00ZPnz69ET+uS5u8Z6dSqeNcODYLnRVFuSRJUk0plMvp9PT0bMxkMt6pqakh7vJLpWRJkmoURbnE2pHtpKlU6riTh48NeIODweBzDvdmIyJVVXW8s7OzVFYmAgBcunRpUyaT6WW0UFGU99955531rExJvENnZ+cWVVXHuSfiw0wwGHzOycstD26VbW1t6zVNi/FOz6Yc6PP5HgMAaG9vLypA4QI9fvz45qmpqauOjsSDt6433nhjHStblJI5rz6f7zHmhLg3sjVNi7W1ta3HW/C0SF5wwUej0R8zofOtO4zFYq+zMkUpl1vVqVOnNiiK0utQLjr/TqfTfzx8+PAaRrMk0XUsFns9t13RaPTHzrbfsuBCvHz5cn3Odh+qqhppbW1djUWuSnEa586dq1UU5XIe5c5SciqVeq+lpaWGEFKUkplnEltbW1erqhpxErIsCy9fvszXrG9qwHWz52kIAGBZlqYoyuO6rlMAAFEUSTKZ9B84cEBBRFLoOShEFAgh9I033lh3//33n1y5cuW9AGBB/na6AMBas2bN3n379rX+6Ec/+jNBEKZ4HQulTQhBRKQHDhxQBgcH/7S2tna7bdsIAODxeATLsjSnDD6WKIXlvv3226sVRen8CMudBdu2TURERVHaJEmqLoUlF/puOTAvZkq9NFhXV0cefvhhoa+vDwAAGhoaoKurC4eHhxdkOX19fXjo0CGKiIIgCPTnP//5qmefffbU2rVr98LclvshUEotQRBcyWTytCRJf/6zn/3MALaRL0mS0NDQsCCl3XnnnUJjYyNxtq+jo4PG4/GSWu8zzzwz1ynSWwfMpYIkSTWyLP/ffC13LktOp9PH7777bjdOz2+X/QLFR/VMAgB47Nix27Zv3/4nhmFogiAILpcLLctaVDdEKaUej0fMZDJTu3fv/uD555/3/OQnP2lZu3btfm6NBVZtAkCVLMstTzzxxNMdHR12V1fX/dXV1TW6rtsCO7+zWOCyp5RSt9td7ff7Lz355JNpYLpaaH0EEYVTp06tjMfjf1yoRZQbmUwGfT7fY/v27XMlk8lW9rNRgqoNRMRkMnkMAFy9vb2PZzKZG71z0xGPx/946tSplcjOhxfUY9jL0N3dXadp2jWcWaHhqzU38+H7rpZpmlokEvkSAEAymTyGOONiSwFe1/j4+DEAgGAw+EXTNFVOfxHbb+L04sm17u7uOqeOCgayyfnAwMBDhmFYOHO22LzJj4GIlq7rGAqFngQASCQSR50KKTEMRMRUKnUUAGB0dPRRVVW5gher/YZhGJbP5/usUzdFA9kqzbVr175dBkHOG5RSDAQCXwUAuH79+tvs51K45bxwWPL/AAD4fL6/cBwlWhRcu3bt206d3AgLOZgmEEJoMBhscrlca2B6GnFTgg7btlEQBJycnIzU19e3jo+P/1ddXd03gQVFZSZvAkDVxMTE2+vXr/+61+t9tKam5lOUUiKK4k0JNln7qWVZ8qc//emjWOBizA2BS2ASH4vF/oF15rJZbh4YiIiRSOQfF7v9C9XBghXGXcPVq1f3MUtGSmlZLFkQBKSUEgAwd+7ceaK3t/e+nTt3drpcLgqO2wY3AQgA1DRN7OnpeaCxsXGgv7//yy6XiyBOr62WhSgiFUWRZDKZ9K5du9oBAAghVjloOYmKAABer/drN8t8rl+/3gEAoCjKCfZTOYKqG4FvMx4BAEgmkz03i7DX6/2aU/ZlByc0Pj7+MuNBw5kpRCkfHRGtcDj8eHt7++3W9BYUZc/NBkVEahhGprm5eUUkEvkG47FcbdcQEcfHx18uRrkFuVZCCEVE14YNG36YSqVaAcAD7BJ2CYEAINq2jf39/e9t3759vyiKIqOzGLEAAQBaVVW14oEHHtg7NjbWwYaPcliVDQAeWZbf3bBhww8R0VVoUFXo2IkHDx6kiCi89957X52cnAwAgBumG1uqxwUAommauH///oTb7b63QF5LCQQArKmpuf/w4cNBmJafC0rbbhEA3JOTkyPnz5//GiKSgwcPUihwm7HY46MCIYSeOXNm244dO+5FROTrwLZtF2tlKIoiUEqNzZs3vzsxMfHaunXrvgUL2CUqAywAcKVSqX+tra39p5GRkSc9Ho9g2zZAkbIURREBpne2CCHE5/P17Nu3bwSLnBIVJSjmqgkhZAQARoqp60aIRqN6OetfCAzDoAAA27ZtO1ZOOky2Rc13i7YEdpJBBABoa2u786677nrMNE2VECJCkacXBEEARBTOnj37K9u2h4qtr1SglPpbWlpqGhoanieE2JQWveZAENGuqqpaMTQ0dGL//v3DAB+ZNWjeKJWrowBANE1L1tbW/s3q1at3lqhejl5Zlv+wefPmcgU184WIiDA5OfmHe+6556Ft27b9ZykrVxRlgBDy38DG+lLWXTSQ7WqcOXNmk6qqUZxJdlLMAruKiGYsFvsxAICqqgFEpPbiLAhbiEgzmUwvAMD169cPO3ks4tER0VBVNXrhwoVPOGW55IDMVV+9evWLLJ0Rv8pR6GPh9GH4AABALBb7HhN2oQsdxcyhTUTE0dHRr0qS5DIMY9zBY1FtNE0Th4aG9jtluGSBM5e4XypQkHkRCoX+6qc//alHVdUgYvYe0EKQVSy70ztvOI7zXGRte2WBtD8S0Wj0752yKyXKtYYqEELo4ODgHlEUXcUc80FErKqqglQqpd53333vDwwMfPaOO+5o93g8VTDPKROl1BYEQbQsCxARWDKdG76LiEAIMQGgStO02JUrV/bu3r17pK+vb/eqVatcpmlCoevQXCa2bVv19fUXsFw7ROUClmHniZ/uHBgYeEzTNJ6/I3vSAWdcsPOmooWIqGlaor+//0v9/f0PsysziDMnVLLvOm7sZ4eBqakpf09Pz72sXSUfH8shK46yLRgQQrC5uVlsamqCo0ePzvpfvuOeiOg6evRo3sixqakJYDpflo2IIiHkxIULFx7csWPHv61du/bxOQ7ZEX5GLpVKnRwaGvrbPXv2DAEAdHZ2Prhz585/Zzm3ZinMkRcLTNM00+n0rzs6Or7/9NNPjzc3N4uMBwEASG67OOrq6sgjjzzyoV2f3OPHXDalmA7NhUXZ341Goys1TbOj0SjZsmULAABs3bpVxXneamBKtgEAhoaGHqytrf3LFStWPOx2uz8FAKtgWjfjuq53yrL85rZt204CAPT19X0OAIyGhoYL7N1969ate9btdu91u90bRVEULMtSLcsa1jTtjCzLv92xY0cvozkvF8rbEAqFVgAAhMNh2LRpE1ZXV4ubNm2aKkxiywTIIsRwOCzZth2xLCvInvDw8PDXnWVuBEmSPnSxur29/faBgYFt77///uYXX3zR46DrAgC4fv36iYmJid+y32adBGlra1sTDAZrJUmqyeV5vi4UZzIWfN2yrDBvn23bkXA4LDnL3JLgCunt7d1hmuasKNhx+WyhOa4EnN5tyfc/8dKlS1WISD744IMNpmmqmqYp586dq0VEwhOH576L0xfJXAsZb9k7Qmtr62pN08LOtpmmafX29u5wyuCWBe/B8Xj8P1j7DT4NiUajRV0f5UJm1s3TLbkYvb/jAh8dHf1WDh3C3iWFBjw4kynodcTs1MpARIzFYv/hbPstDa6Es2fP1um6HsecC+Ber/dRgOIvgDvpNTU1uScnJ4dYtGwritID08uOJYlBOK9er/fR3Avguq7Hz549W7dQz7SswXtyIBBwpk7iKRxiXV1dnwQoXQqH0dHRxzAHw8PD+5xlCgXnsaur65OqqsYwJ4VDIBDgKZVufet1gjeYZ6hx9HpUFOWiJEnV3NqLoSFJkjAxMfF70zTTqqpGVFWNmKY5OTEx8Q6rv2DBc6uUJKlaUZSLzDVnUxyyTEEfP+UCzAiHbU5ke35OhhqxWCU3NzeLfr//3pGRkU+89tprq1599dXbrl69usnv9+8q5vagw+WKiqK0MOVm0yipqho7c+bMpmL5X9ZwuOovGIbBV5CcidCOvfDCC1XOsksBnJcXXnihit+NwtmJ0JBnh19KfC8KePQ5Ojr6zRxB8Zv3p1taWm53li2AhuCMkouxKs5DS0vL7ZOTk235eA6Hw39dDL+3HLggwuGwlE9gU1NTgwMDA7tZ2UX5+onzay8DAwO7p6amBudQbiXjbD7gTBqig46gK5uqV9M0bWxs7LuO8ouRThjGxsa+q2malo/HWCx20NmWCnLABTM2NvYdSrNbtrMSgsuyfKa/v3+v4x0Ry5cQPKvY/v7+vbIsn8EZZKNlSimOjY19x9mGCuYAF5Df739a07QUd4NOSzEMgyYSiV93dXV9KKU/sqkRLGwjhXBLzQ2Kurq6GhOJxK9ZEOi0WpN5lpTf73/ayXsFNwAXVHd3993pdNqZPiK7v4uIqOu6Lcvy73w+31NvvfXWyjz1FPRRjrfeemulz+d7Spbl3+m6bs9FX1GUzu7u7rudPFcwT3DBNzY2VsXj8UOapvE0+nyuPOtclqZpI7Is/yIYDH7l/Pnz22FhtzaE8+fPbw8Gg1+RZfkXmqaN4GyYzs/qaJqmx+PxQ42NjUtuCpeLJb02iiz/FSJCb2/vfVu3bv3hbbfd9mX+b5j5MJYADoXqum5QSocppUOU0hFEDFNKk4SQDKu3RhCEWkLIFkEQtgmCcJcgCHd6PB63gzyllNLcD2Ol0+njoVDo5XvuuecDQghQSpfXUZsliFnLiV6v99F0On3KEYTxcbFsn7ajlGI6nT7FN0IAsla7pA1kWQFzMqf39fV9LpFI/FLX9Vg+RSH7+KRt27kfpsx+oJL9b86PU+q6HkskEr9kJ0Hy8rHUsex6IOZ8z/fChQvrt2zZ8kWPx/N4TU3Ngx6P545C85VRSkHX9UAmk+nUdb0lHA7/fs+ePQlG1/m94mWDZRf5cQHzA32EkAQA/AYAfiNJUvVzzz1Xv2LFivvdbve9giB8RhTFzYIg1IqiuIIfcUVEtG1bpZQmbduOUEq9hmH0qKr6/ptvvjl46NAhnhkWEFEs98G4cmLZWXAucH6feHe/+uqrnvr6egAAGBwchJdeekkHACNfYbyFPvG+7BXsBFN2VuEwfcd4ztt/giCAbdvOYInCtPtf1kp14pZS8FzAOZYxbyVFVlBBBRVUUEEFSwv/D1SC2s7wvvfuAAAAAElFTkSuQmCC';
+const SITES = ['GGPoker','PokerStars','PokerStars ES','WPT Global','PartyPoker','Ya Poker','iPoker','WPN','Champion','Slot Poker','Outro'];
 
-let torneios = [];
-let currentITMId = null;
-let imageBase64 = null;
+let torneios = JSON.parse(localStorage.getItem('ht_sess') || '[]');
+let imgB64 = null;
+let itmId = null;
+let histView = false;
 
-function init() {
-  document.getElementById('logo-img').src = 'data:image/png;base64,' + LOGO_B64;
-  loadTorneios();
-  renderTorneios();
-  renderHistorico();
+function siteClass(s) {
+  s = (s||'').toLowerCase();
+  if (s.includes('gg')) return 'gg';
+  if (s.includes('stars') || s.includes('ps')) return 'ps';
+  if (s.includes('wpt')) return 'wpt';
+  if (s.includes('ya')) return 'ya';
+  if (s.includes('party') || s.includes('pp')) return 'pp';
+  return 'other';
 }
 
-// ── FILE HANDLING ──────────────────────────────────────────────────────────
-function handleFile(e) {
-  const file = e.target.files[0];
-  if (file) processImage(file);
-}
+function save() { localStorage.setItem('ht_sess', JSON.stringify(torneios)); }
 
-function dragOver(e) {
-  e.preventDefault();
-  document.getElementById('upload-zone').classList.add('drag');
-}
-
-function dragLeave(e) {
-  document.getElementById('upload-zone').classList.remove('drag');
-}
-
-function dropFile(e) {
-  e.preventDefault();
-  document.getElementById('upload-zone').classList.remove('drag');
-  const file = e.dataTransfer.files[0];
-  if (file && file.type.startsWith('image/')) processImage(file);
-}
-
-function processImage(file) {
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const dataUrl = e.target.result;
-    imageBase64 = dataUrl.split(',')[1];
-    document.getElementById('preview-img').src = dataUrl;
-    document.getElementById('preview-wrap').style.display = 'block';
-    document.getElementById('upload-zone').style.display = 'none';
-    document.getElementById('analyze-btn').style.display = 'block';
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearPreview() {
-  imageBase64 = null;
-  document.getElementById('preview-wrap').style.display = 'none';
-  document.getElementById('upload-zone').style.display = 'block';
-  document.getElementById('analyze-btn').style.display = 'none';
-  document.getElementById('file-input').value = '';
-}
-
-// ── AI ANALYSIS ────────────────────────────────────────────────────────────
-async function analyzeImage() {
-  if (!imageBase64) return;
-
-  document.getElementById('analyze-btn').style.display = 'none';
-  document.getElementById('preview-wrap').style.display = 'none';
-  document.getElementById('loading-card').style.display = 'block';
-
-  try {
-    const response = await fetch('/api/analyze', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 1000,
-        messages: [{
-          role: 'user',
-          content: [
-            {
-              type: 'image',
-              source: { type: 'base64', media_type: 'image/png', data: imageBase64 }
-            },
-            {
-              type: 'text',
-              text: `Analise este screenshot de uma sessão de poker online. Identifique TODOS os torneios visíveis nas janelas abertas.
-
-Para cada torneio, extraia:
-- site: nome do site (GGPoker, PokerStars, WPT Global, PartyPoker, Ya Poker, iPoker, ou outro)
-- buyin: valor do buy-in em dólares (número apenas, sem símbolo)
-- nome: nome do torneio conforme aparece na barra de título
-
-Responda APENAS com JSON válido, sem texto adicional, no formato:
-{"torneios": [{"site": "GGPoker", "buyin": 25, "nome": "GGMasters Bounty Warm-Up"}, ...]}`
-            }
-          ]
-        }]
-      })
-    });
-
-    const data = await response.json();
-    console.log('API response:', JSON.stringify(data));
-    
-    if (data.error) throw new Error('API: ' + data.error.message);
-    if (!data.content || !data.content[0]) throw new Error('Resposta vazia da API: ' + JSON.stringify(data));
-    
-    const text = data.content[0].text;
-    const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
-
-    document.getElementById('loading-card').style.display = 'none';
-
-    const novos = parsed.torneios || [];
-    const data2 = new Date().toLocaleDateString('pt-BR');
-    const hora = new Date().toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'});
-
-    novos.forEach(t => {
-      torneios.push({
-        id: Date.now() + Math.random(),
-        site: t.site || 'Outro',
-        buyin: parseFloat(t.buyin) || 0,
-        nome: t.nome || '—',
-        resultado: null,
-        premio: 0,
-        data: data2,
-        hora
-      });
-    });
-
-    saveTorneios();
-    renderTorneios();
-    clearPreview();
-    document.getElementById('upload-zone').style.display = 'block';
-
-  } catch(e) {
-    document.getElementById('loading-card').style.display = 'none';
-    document.getElementById('analyze-btn').style.display = 'block';
-    document.getElementById('preview-wrap').style.display = 'block';
-    alert('Erro ao analisar imagem. Tente novamente.');
-    console.error(e);
-  }
-}
-
-// ── RENDER ─────────────────────────────────────────────────────────────────
-function renderTorneios() {
-  const ativos = torneios.filter(t => !t.resultado);
-  const list = document.getElementById('torneios-list');
-  const section = document.getElementById('torneios-section');
-
+function render() {
+  const tbody = document.getElementById('tbody');
   if (torneios.length === 0) {
-    section.style.display = 'none';
-  } else {
-    section.style.display = 'block';
+    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">Envie um print para adicionar torneios</td></tr>';
+    updateStats(); return;
   }
-
-  list.innerHTML = torneios.map(t => {
-    const siteClass = getSiteClass(t.site);
-    const lucro = t.resultado ? (t.premio - t.buyin) : null;
-    const isPos = lucro !== null && lucro >= 0;
-    const tid = t.id.toString().replace('.','_');
-
-    return `
-    <div class="t-card" id="tc-${tid}">
-      <div class="t-header">
-        <select class="t-site-select" onchange="editField('${t.id}', 'site', this.value)">
-          ${['GGPoker','PokerStars','PokerStars ES','WPT Global','PartyPoker','Ya Poker','iPoker','WPN','Champion','Slot Poker','Outro'].map(s => `<option value="${s}" ${s===t.site?'selected':''}>${s}</option>`).join('')}
-        </select>
-        <input class="t-buyin-inp" type="number" value="${t.buyin}" step="0.01" min="0" onchange="editField('${t.id}', 'buyin', parseFloat(this.value))" onblur="editField('${t.id}', 'buyin', parseFloat(this.value))">
-      </div>
-      <input class="t-name-inp" type="text" value="${t.nome}" onchange="editField('${t.id}', 'nome', this.value)" onblur="editField('${t.id}', 'nome', this.value)">
-      ${t.resultado ? `
-        <div class="t-result">
-          <span class="t-result-label">${t.resultado === 'bust' ? 'Bust' : 'ITM — Prêmio $' + t.premio.toFixed(2)}</span>
-          <span class="t-result-val ${isPos ? 'pos' : 'neg'}">${isPos?'+':'-'}$${Math.abs(lucro).toFixed(2)}</span>
-        </div>
-      ` : `
-        <div class="t-actions">
-          <button class="t-btn" style="flex:0.3;color:var(--red);border-color:var(--red);font-size:16px;" onclick="removeTorneio('${t.id}')">✕</button>
-          <button class="t-btn bust" onclick="markBust('${t.id}')">✗ Bust</button>
-          <button class="t-btn itm" onclick="openITM('${t.id}')">$ ITM</button>
-        </div>
-      `}
-    </div>`;
+  const sOpts = SITES.map(s => `<option value="${s}">${s}</option>`).join('');
+  tbody.innerHTML = torneios.map(t => {
+    const luc = t.res ? t.premio - t.buyin : null;
+    const isPos = luc !== null && luc >= 0;
+    const sc = siteClass(t.site);
+    return `<tr class="${t.res?'done':''}">
+      <td><select class="site-sel ${sc}" onchange="ef('${t.id}','site',this.value)">${SITES.map(s=>`<option value="${s}"${s===t.site?' selected':''}>${s}</option>`).join('')}</select></td>
+      <td class="tname"><input class="edit-inp tname" type="text" value="${t.nome}" onblur="ef('${t.id}','nome',this.value)"></td>
+      <td><input class="bi-inp" type="number" value="${t.buyin}" step="0.01" onblur="ef('${t.id}','buyin',parseFloat(this.value)||0)"></td>
+      <td>${t.res ? `<span class="tprofit ${isPos?'pos':'neg'}">${isPos?'+':'-'}$${Math.abs(luc).toFixed(2)}</span>` : ''}</td>
+      <td><div class="btngrp">${t.res ? '' : `<button class="tbtn del" onclick="rm('${t.id}')">✕</button><button class="tbtn bust" onclick="mkBust('${t.id}')">Bust</button><button class="tbtn itm" onclick="mkITM('${t.id}')">ITM</button>`}</div></td>
+    </tr>`;
   }).join('');
-
-  updateStatusBar();
+  updateStats();
 }
 
-function getSiteClass(site) {
-  const s = (site || '').toLowerCase();
-  if (s.includes('gg')) return 't-site-gg';
-  if (s.includes('stars') || s.includes('ps')) return 't-site-ps';
-  if (s.includes('wpt')) return 't-site-wpt';
-  if (s.includes('ya')) return 't-site-ya';
-  if (s.includes('party') || s.includes('pp')) return 't-site-pp';
-  return 't-site-other';
-}
-
-function updateStatusBar() {
-  const ativos = torneios.filter(t => !t.resultado).length;
-  const inv = torneios.reduce((s,t) => s+t.buyin, 0);
-  const pre = torneios.reduce((s,t) => s+t.premio, 0);
+function updateStats() {
+  const inv = torneios.reduce((s,t)=>s+t.buyin,0);
+  const pre = torneios.reduce((s,t)=>s+t.premio,0);
   const luc = pre - inv;
+  const at = torneios.filter(t=>!t.res).length;
+  const abi = torneios.length > 0 ? inv/torneios.length : 0;
+  const itm = torneios.filter(t=>t.res&&t.res!=='bust').length;
+  const bust = torneios.filter(t=>t.res==='bust').length;
+  const fin = torneios.filter(t=>t.res).length;
+  const roi = inv > 0 ? ((luc/inv)*100).toFixed(0) : 0;
 
-  const abi = torneios.length > 0 ? inv / torneios.length : 0;
-  const itm = torneios.filter(t => t.resultado && t.resultado !== 'bust').length;
-  const bust = torneios.filter(t => t.resultado === 'bust').length;
-  const finalizados = torneios.filter(t => t.resultado).length;
-  const itmPct = finalizados > 0 ? ((itm/finalizados)*100).toFixed(0) : 0;
-  const roi = inv > 0 ? (((pre-inv)/inv)*100).toFixed(0) : 0;
-
-  document.getElementById('s-ativos').textContent = ativos;
-  document.getElementById('s-total').textContent = torneios.length;
-  document.getElementById('s-inv').textContent = '$' + inv.toFixed(0);
-  document.getElementById('s-abi').textContent = '$' + abi.toFixed(0);
-  document.getElementById('s-premios').textContent = '$' + pre.toFixed(0);
-  const lEl = document.getElementById('s-lucro');
-  lEl.textContent = (luc >= 0 ? '+' : '') + '$' + luc.toFixed(0);
-  lEl.className = 'stat-n ' + (luc >= 0 ? 'pos' : 'neg');
+  document.getElementById('s-at').textContent = at;
+  document.getElementById('s-tot').textContent = torneios.length;
+  document.getElementById('s-inv').textContent = '$'+inv.toFixed(0);
+  document.getElementById('s-abi').textContent = '$'+abi.toFixed(0);
+  document.getElementById('s-pre').textContent = '$'+pre.toFixed(0);
+  const lEl = document.getElementById('s-luc');
+  lEl.textContent = (luc>=0?'+':'')+('$'+luc.toFixed(0));
+  lEl.className = 'sc-n '+(luc>=0?'pos':'neg');
 
   if (torneios.length > 0) {
-    document.getElementById('sidebar-stats-label').style.display = 'block';
-    document.getElementById('sidebar-stats').style.display = 'block';
+    document.getElementById('sl').style.display = 'block';
+    document.getElementById('sstats').style.display = 'block';
     document.getElementById('ss-itm').textContent = itm;
     document.getElementById('ss-bust').textContent = bust;
-    document.getElementById('ss-itmpct').textContent = itmPct + '%';
+    document.getElementById('ss-pct').textContent = fin>0 ? Math.round(itm/fin*100)+'%' : '0%';
     const rEl = document.getElementById('ss-roi');
-    rEl.textContent = (parseInt(roi)>=0?'+':'') + roi + '%';
-    rEl.className = 'side-stat-v ' + (parseInt(roi)>=0?'pos':'neg');
+    rEl.textContent = (parseInt(roi)>=0?'+':'')+roi+'%';
+    rEl.className = 'sstat-v '+(parseInt(roi)>=0?'pos':'neg');
   }
 }
 
-// ── RESULTS ────────────────────────────────────────────────────────────────
-function markBust(id) {
-  const t = torneios.find(x => x.id.toString() === id.toString());
+function ef(id, field, val) {
+  const t = torneios.find(x=>x.id==id);
   if (!t) return;
-  t.resultado = 'bust';
-  t.premio = 0;
-  saveTorneios();
-  renderTorneios();
+  t[field] = field==='buyin' ? parseFloat(val)||0 : val;
+  save(); render();
 }
 
-function openITM(id) {
-  currentITMId = id;
-  const t = torneios.find(x => x.id.toString() === id.toString());
-  if (!t) return;
-  document.getElementById('modal-sub').textContent = `${t.site} — ${t.nome} — Buy-in $${t.buyin.toFixed(2)}`;
-  document.getElementById('modal-premio').value = '';
-  document.getElementById('itm-modal').style.display = 'flex';
-  setTimeout(() => document.getElementById('modal-premio').focus(), 300);
+function rm(id) { torneios = torneios.filter(x=>x.id!=id); save(); render(); }
+
+function mkBust(id) {
+  const t = torneios.find(x=>x.id==id);
+  if (t) { t.res='bust'; t.premio=0; save(); render(); }
+}
+
+function mkITM(id) {
+  itmId = id;
+  const t = torneios.find(x=>x.id==id);
+  document.getElementById('modal-sub').textContent = `${t.site} — $${t.buyin}`;
+  document.getElementById('modal-val').value = '';
+  document.getElementById('modal').style.display = 'flex';
+  setTimeout(()=>document.getElementById('modal-val').focus(), 200);
 }
 
 function confirmITM() {
-  const premio = parseFloat(document.getElementById('modal-premio').value) || 0;
-  const t = torneios.find(x => x.id.toString() === currentITMId.toString());
-  if (!t) return;
-  t.resultado = 'itm';
-  t.premio = premio;
-  saveTorneios();
-  renderTorneios();
-  closeModalDirect();
+  const t = torneios.find(x=>x.id==itmId);
+  if (t) { t.res='itm'; t.premio=parseFloat(document.getElementById('modal-val').value)||0; save(); render(); }
+  document.getElementById('modal').style.display = 'none';
 }
 
-function closeModal(e) {
-  if (e.target === document.getElementById('itm-modal')) closeModalDirect();
+function closeModal(e) { if (e.target.id==='modal') document.getElementById('modal').style.display='none'; }
+
+function hf(e) { const f=e.target.files[0]; if(f) processImg(f); }
+function ev(e) { e.preventDefault(); document.querySelector('.upload-zone').style.borderColor='var(--accent)'; }
+function el(e) { document.querySelector('.upload-zone').style.borderColor='var(--border2)'; }
+function ed(e) { e.preventDefault(); el(e); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) processImg(f); }
+
+function processImg(f) {
+  const r = new FileReader();
+  r.onload = e => {
+    imgB64 = e.target.result.split(',')[1];
+    document.getElementById('prev-img').src = e.target.result;
+    document.getElementById('prev-wrap').style.display = 'block';
+    document.querySelector('.upload-zone').style.display = 'none';
+    document.getElementById('abtn').style.display = 'block';
+  };
+  r.readAsDataURL(f);
 }
 
-function closeModalDirect() {
-  document.getElementById('itm-modal').style.display = 'none';
-  currentITMId = null;
+function clearPrev() {
+  imgB64 = null;
+  document.getElementById('prev-wrap').style.display = 'none';
+  document.querySelector('.upload-zone').style.display = 'block';
+  document.getElementById('abtn').style.display = 'none';
+  document.getElementById('fi').value = '';
 }
 
-// ── SESSION ────────────────────────────────────────────────────────────────
-async function endSession() {
-  if (!confirm('Encerrar sessão e salvar todos os torneios?')) return;
-
-  const data = new Date().toLocaleDateString('pt-BR');
-  for (const t of torneios) {
-    const lucro = t.premio - t.buyin;
-    const row = [t.data || data, t.hora || '', t.site, t.nome, t.buyin, t.premio, lucro, t.resultado || 'ativo'];
-    await appendToSheet(row);
+async function analyze() {
+  if (!imgB64) return;
+  document.getElementById('abtn').style.display = 'none';
+  document.getElementById('prev-wrap').style.display = 'none';
+  document.getElementById('loading').style.display = 'block';
+  try {
+    const res = await fetch('/api/analyze', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{role:'user',content:[
+          {type:'image',source:{type:'base64',media_type:'image/png',data:imgB64}},
+          {type:'text',text:'Analise este screenshot de poker online. Identifique TODOS os torneios visíveis. Para cada um extraia: site (GGPoker, PokerStars, WPT Global, PartyPoker, Ya Poker, iPoker, ou outro), buyin (número em dólares, sem símbolo), nome. Responda APENAS JSON: {"torneios":[{"site":"GGPoker","buyin":25,"nome":"GGMasters"}]}'}
+        ]}]
+      })
+    });
+    const data = await res.json();
+    console.log('API:', JSON.stringify(data));
+    if (data.error) throw new Error(data.error.message);
+    if (!data.content || !data.content[0]) throw new Error('Resposta inválida');
+    const text = data.content[0].text;
+    const parsed = JSON.parse(text.replace(/```json|```/g,'').trim());
+    const now = new Date();
+    const dt = now.toLocaleDateString('pt-BR');
+    const hr = now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'});
+    (parsed.torneios||[]).forEach(t => {
+      torneios.push({id: Date.now()+Math.random(), site:t.site||'Outro', buyin:parseFloat(t.buyin)||0, nome:t.nome||'—', res:null, premio:0, data:dt, hora:hr});
+    });
+    save(); render();
+  } catch(e) {
+    alert('Erro: '+e.message);
+    document.getElementById('abtn').style.display = 'block';
+    document.getElementById('prev-wrap').style.display = 'block';
   }
+  document.getElementById('loading').style.display = 'none';
+  document.querySelector('.upload-zone').style.display = 'block';
+  clearPrev();
+}
 
-  // Save to history
-  const hist = JSON.parse(localStorage.getItem('heroes_tracker_hist') || '[]');
-  const inv = torneios.reduce((s,t) => s+t.buyin, 0);
-  const pre = torneios.reduce((s,t) => s+t.premio, 0);
-  hist.unshift({ data, torneios: [...torneios], investido: inv, premios: pre, lucro: pre-inv });
-  localStorage.setItem('heroes_tracker_hist', JSON.stringify(hist));
-
-  torneios = [];
-  saveTorneios();
-  renderTorneios();
-  renderHistorico();
+async function endSession() {
+  if (!torneios.length) return;
+  if (!confirm('Encerrar sessão e salvar?')) return;
+  const dt = new Date().toLocaleDateString('pt-BR');
+  for (const t of torneios) {
+    await appendRow([t.data||dt, t.hora||'', t.site, t.nome, t.buyin, t.premio, t.premio-t.buyin, t.res||'ativo']);
+  }
+  const hist = JSON.parse(localStorage.getItem('ht_hist')||'[]');
+  const inv=torneios.reduce((s,t)=>s+t.buyin,0), pre=torneios.reduce((s,t)=>s+t.premio,0);
+  hist.unshift({data:dt, torneios:[...torneios], inv, pre, luc:pre-inv});
+  localStorage.setItem('ht_hist', JSON.stringify(hist));
+  torneios=[]; save(); render();
   alert('Sessão salva!');
 }
 
-async function appendToSheet(rowData) {
+async function appendRow(row) {
   try {
-    await fetch(SCRIPT_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ row: rowData, sheetId: SHEET_ID, sheetName: SHEET_NAME })
-    });
+    await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify({row,sheetId:SHEET_ID,sheetName:SHEET_NAME})});
   } catch(e) { console.error(e); }
 }
 
-// ── HISTORY ────────────────────────────────────────────────────────────────
-function renderHistorico() {
-  const hist = JSON.parse(localStorage.getItem('heroes_tracker_hist') || '[]');
-  const totalLucro = hist.reduce((s,h) => s+(h.lucro||0), 0);
-  const totalTorneios = hist.reduce((s,h) => s+(h.torneios?.length||0), 0);
-  const totalInv = hist.reduce((s,h) => s+(h.investido||0), 0);
-  const roi = totalInv > 0 ? ((totalLucro/totalInv)*100).toFixed(1) : '0';
+function toggleHistorico() {
+  histView = !histView;
+  document.getElementById('twrap').style.display = histView ? 'none' : 'block';
+  document.getElementById('side').style.display = histView ? 'none' : 'flex';
+  document.getElementById('sbar').style.display = histView ? 'none' : 'flex';
+  document.getElementById('hist-wrap').style.display = histView ? 'block' : 'none';
+  document.getElementById('hist-btn').className = histView ? 'hist-btn active' : 'hist-btn';
+  if (histView) renderHist();
+}
 
-  const lEl = document.getElementById('h-lucro');
-  lEl.textContent = (totalLucro>=0?'+':'') + '$' + totalLucro.toFixed(0);
-  lEl.className = 'stat-n ' + (totalLucro>=0?'pos':'neg');
-  document.getElementById('h-sessoes').textContent = hist.length;
-  document.getElementById('h-torneios').textContent = totalTorneios;
-  const rEl = document.getElementById('h-roi');
-  rEl.textContent = (parseFloat(roi)>=0?'+':'') + roi + '%';
-  rEl.className = 'stat-n ' + (parseFloat(roi)>=0?'pos':'neg');
-
-  const list = document.getElementById('hist-list');
-  if (hist.length === 0) {
-    list.innerHTML = '<div class="empty"><span class="big">VAZIO</span>Nenhuma sessão ainda.</div>';
-    return;
-  }
-
-  list.innerHTML = hist.map((h,i) => {
-    const luc = h.lucro || 0;
-    return `
-    <div class="hist-card">
-      <div class="hist-header" onclick="toggleHist(${i})">
-        <div>
-          <div style="font-size:13px;font-weight:500;">${h.data}</div>
-          <div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:2px;">${h.torneios?.length||0} torneios • Inv $${(h.investido||0).toFixed(0)}</div>
-        </div>
-        <div class="hist-profit ${luc>=0?'pos':'neg'}">${luc>=0?'+':'-'}$${Math.abs(luc).toFixed(2)}</div>
+function renderHist() {
+  const hist = JSON.parse(localStorage.getItem('ht_hist')||'[]');
+  const tl = hist.reduce((s,h)=>s+(h.luc||0),0);
+  const tt = hist.reduce((s,h)=>s+(h.torneios?.length||0),0);
+  const ti = hist.reduce((s,h)=>s+(h.inv||0),0);
+  const roi = ti>0 ? ((tl/ti)*100).toFixed(1) : '0';
+  document.getElementById('hstats').innerHTML = `
+    <div class="hstat"><div class="hstat-n ${tl>=0?'pos':'neg'}">${tl>=0?'+':'-'}$${Math.abs(tl).toFixed(0)}</div><div class="hstat-l">Lucro Total</div></div>
+    <div class="hstat"><div class="hstat-n">${hist.length}</div><div class="hstat-l">Sessões</div></div>
+    <div class="hstat"><div class="hstat-n">${tt}</div><div class="hstat-l">Torneios</div></div>
+    <div class="hstat"><div class="hstat-n ${parseFloat(roi)>=0?'pos':'neg'}">${parseFloat(roi)>=0?'+':''}${roi}%</div><div class="hstat-l">ROI</div></div>`;
+  if (!hist.length) { document.getElementById('hlist').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted2);font-family:'DM Mono',monospace;font-size:10px;">Nenhuma sessão ainda.</div>'; return; }
+  document.getElementById('hlist').innerHTML = hist.map((h,i) => {
+    const luc=h.luc||0;
+    return `<div class="hcard">
+      <div class="hcard-hdr" onclick="document.getElementById('hb${i}').classList.toggle('open')">
+        <div><div class="hcard-date">${h.data}</div><div class="hcard-meta">${h.torneios?.length||0} torneios • Inv $${(h.inv||0).toFixed(0)}</div></div>
+        <div class="hcard-profit ${luc>=0?'pos':'neg'}">${luc>=0?'+':'-'}$${Math.abs(luc).toFixed(2)}</div>
       </div>
-      <div class="hist-body" id="hb-${i}">
-        ${(h.torneios||[]).map(t => `
-          <div class="hist-row">
-            <div>
-              <span style="font-size:12px;font-weight:500;">${t.site}</span>
-              <span style="font-size:11px;color:var(--muted);margin-left:8px;">$${t.buyin}</span>
-            </div>
-            <span style="font-family:'Bebas Neue',sans-serif;font-size:16px;color:${(t.premio-t.buyin)>=0?'var(--green)':'var(--red)'};">${(t.premio-t.buyin)>=0?'+':'-'}$${Math.abs(t.premio-t.buyin).toFixed(2)}</span>
-          </div>`).join('')}
+      <div class="hcard-body" id="hb${i}">
+        ${(h.torneios||[]).map(t=>`<div class="hcard-row"><span>${t.site} — ${t.nome||''}</span><span style="font-family:'Bebas Neue',sans-serif;color:${(t.premio-t.buyin)>=0?'var(--green)':'var(--red)'};">${(t.premio-t.buyin)>=0?'+':'-'}$${Math.abs(t.premio-t.buyin).toFixed(2)}</span></div>`).join('')}
       </div>
     </div>`;
   }).join('');
 }
 
-function toggleHist(i) {
-  document.getElementById('hb-' + i).classList.toggle('open');
-}
-
-// ── STORAGE ────────────────────────────────────────────────────────────────
-function editField(id, field, value) {
-  const t = torneios.find(x => x.id.toString() === id.toString());
-  if (!t) return;
-  if (field === 'buyin') t.buyin = parseFloat(value) || 0;
-  else t[field] = value;
-  saveTorneios();
-  updateStatusBar();
-}
-
-function removeTorneio(id) {
-  torneios = torneios.filter(x => x.id.toString() !== id.toString());
-  saveTorneios();
-  renderTorneios();
-}
-
-function saveTorneios() {
-  localStorage.setItem('heroes_tracker_session', JSON.stringify(torneios));
-}
-
-function loadTorneios() {
-  torneios = JSON.parse(localStorage.getItem('heroes_tracker_session') || '[]');
-}
-
-function showView(name, btn) {
-  const tracker = document.getElementById('view-tracker');
-  const statusBar = document.getElementById('status-bar-top');
-  const hist = document.getElementById('view-historico');
-  if (name === 'historico') {
-    tracker.style.display = 'none';
-    statusBar.style.display = 'none';
-    hist.style.display = 'block';
-    renderHistorico();
-  } else {
-    tracker.style.display = 'flex';
-    statusBar.style.display = 'flex';
-    hist.style.display = 'none';
-  }
-}
-
-init();
+render();
 </script>
 </body>
 </html>
