@@ -325,6 +325,11 @@ Responda APENAS com JSON válido, sem texto adicional, no formato:
     });
 
     const data = await response.json();
+    console.log('API response:', JSON.stringify(data));
+    
+    if (data.error) throw new Error('API: ' + data.error.message);
+    if (!data.content || !data.content[0]) throw new Error('Resposta vazia da API: ' + JSON.stringify(data));
+    
     const text = data.content[0].text;
     const clean = text.replace(/```json|```/g, '').trim();
     const parsed = JSON.parse(clean);
