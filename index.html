@@ -420,14 +420,25 @@ async function analyze() {
 
 async function endSession() {
   if (!torneios.length) return;
-  if (!confirm('Encerrar sessão e salvar?')) return;
+  const ativos = torneios.filter(t => !t.res);
+  if (ativos.length) {
+    const nomes = ativos.map(t => `• ${t.site} $${t.buyin} — ${t.nome}`).join('\n');
+    const ok = confirm(`${ativos.length} torneio(s) ainda sem resultado:\n${nomes}\n\nEles serão salvos como "ativo". Deseja continuar?`);
+    if (!ok) return;
+  } else {
+    if (!confirm('Encerrar sessão e salvar?')) return;
+  }
   const dt = new Date().toLocaleDateString('pt-BR');
   for (const t of torneios) {
     await appendRow([t.data||dt, t.hora||'', t.site, t.nome, t.buyin, t.premio, t.premio-t.buyin, t.res||'ativo']);
   }
   const hist = JSON.parse(localStorage.getItem('ht_hist')||'[]');
-  const inv=torneios.reduce((s,t)=>s+t.buyin,0), pre=torneios.reduce((s,t)=>s+t.premio,0);
-  hist.unshift({data:dt, torneios:[...torneios], inv, pre, luc:pre-inv});
+  // Lucro considera apenas torneios finalizados (bust ou itm)
+  const finalizados = torneios.filter(t => t.res && t.res !== 'ativo');
+  const inv = torneios.reduce((s,t) => s+t.buyin, 0);
+  const pre = finalizados.reduce((s,t) => s+t.premio, 0);
+  const invFin = finalizados.reduce((s,t) => s+t.buyin, 0);
+  hist.unshift({data:dt, torneios:[...torneios], inv, pre, luc:pre-invFin});
   localStorage.setItem('ht_hist', JSON.stringify(hist));
   torneios=[]; save(); render();
   alert('Sessão salva!');
@@ -456,7 +467,7 @@ function renderHist() {
   const ti = hist.reduce((s,h)=>s+(h.inv||0),0);
   const roi = ti>0 ? ((tl/ti)*100).toFixed(1) : '0';
   document.getElementById('hstats').innerHTML = `
-    <div class="hstat"><div class="hstat-n ${tl>=0?'pos':'neg'}">${tl>=0?'+':'-'}$${Math.abs(tl).toFixed(0)}</div><div class="hstat-l">Lucro Total</div></div>
+    <div class="hstat"><div class="hstat-n ${tl>=0?'pos':'neg'}">${tl>=0?'+':'-'}$${Math.abs(tl).toFixed(2)}</div><div class="hstat-l">Lucro Total</div></div>
     <div class="hstat"><div class="hstat-n">${hist.length}</div><div class="hstat-l">Sessões</div></div>
     <div class="hstat"><div class="hstat-n">${tt}</div><div class="hstat-l">Torneios</div></div>
     <div class="hstat"><div class="hstat-n ${parseFloat(roi)>=0?'pos':'neg'}">${parseFloat(roi)>=0?'+':''}${roi}%</div><div class="hstat-l">ROI</div></div>`;
@@ -465,7 +476,7 @@ function renderHist() {
     const luc=h.luc||0;
     return `<div class="hcard">
       <div class="hcard-hdr" onclick="document.getElementById('hb${i}').classList.toggle('open')">
-        <div><div class="hcard-date">${h.data}</div><div class="hcard-meta">${h.torneios?.length||0} torneios • Inv $${(h.inv||0).toFixed(0)}</div></div>
+        <div><div class="hcard-date">${h.data}</div><div class="hcard-meta">${h.torneios?.length||0} torneios • Inv $${(h.inv||0).toFixed(2)}</div></div>
         <div class="hcard-profit ${luc>=0?'pos':'neg'}">${luc>=0?'+':'-'}$${Math.abs(luc).toFixed(2)}</div>
       </div>
       <div class="hcard-body" id="hb${i}">
