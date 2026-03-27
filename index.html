@@ -150,7 +150,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 <div class="body">
 
   <div class="side" id="side">
-    <div class="upload-zone" onclick="document.getElementById('fi').click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
+    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('fi').click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
       <div class="upload-icon">📸</div>
       <div class="upload-title">Print</div>
       <div class="upload-sub">Clique ou arraste</div>
@@ -176,6 +176,17 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
       <div class="sstat"><span class="sstat-l">ITM%</span><span class="sstat-v" id="ss-pct">0%</span></div>
       <div class="sstat"><span class="sstat-l">ROI</span><span class="sstat-v" id="ss-roi">0%</span></div>
     </div>
+
+    <div class="slabel" style="margin-top:4px;">Adicionar Manual</div>
+    <select id="m-site" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-size:9px;padding:5px 6px;border-radius:3px;cursor:pointer;">
+      <option value="">Site...</option>
+      <option>GGPoker</option><option>PokerStars</option><option>PokerStars ES</option>
+      <option>WPT Global</option><option>PartyPoker</option><option>Ya Poker</option>
+      <option>iPoker</option><option>WPN</option><option>Champion</option><option>Slot Poker</option><option>Outro</option>
+    </select>
+    <input type="number" id="m-bi" placeholder="Buy-in $" step="0.01" min="0" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 6px;border-radius:3px;">
+    <input type="text" id="m-nome" placeholder="Nome (opcional)" style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:11px;padding:5px 6px;border-radius:3px;">
+    <button onclick="addManual()" style="width:100%;padding:7px;background:var(--surface2);border:1px solid var(--border2);color:var(--accent);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;border-radius:3px;">+ Adicionar</button>
 
     <div class="spacer"></div>
     <button class="endbtn" onclick="endSession()">Encerrar Sessão</button>
@@ -316,8 +327,8 @@ function confirmITM() {
 function closeModal(e) { if (e.target.id==='modal') document.getElementById('modal').style.display='none'; }
 
 function hf(e) { const f=e.target.files[0]; if(f) processImg(f); }
-function ev(e) { e.preventDefault(); document.querySelector('.upload-zone').style.borderColor='var(--accent)'; }
-function el(e) { document.querySelector('.upload-zone').style.borderColor='var(--border2)'; }
+function ev(e) { e.preventDefault(); document.getElementById('upload-zone').style.borderColor='var(--accent)'; }
+function el(e) { document.getElementById('upload-zone').style.borderColor='var(--border2)'; }
 function ed(e) { e.preventDefault(); el(e); const f=e.dataTransfer.files[0]; if(f&&f.type.startsWith('image/')) processImg(f); }
 
 function processImg(f) {
@@ -326,7 +337,7 @@ function processImg(f) {
     imgB64 = e.target.result.split(',')[1];
     document.getElementById('prev-img').src = e.target.result;
     document.getElementById('prev-wrap').style.display = 'block';
-    document.querySelector('.upload-zone').style.display = 'none';
+    document.getElementById('upload-zone').style.display = 'none';
     document.getElementById('abtn').style.display = 'block';
   };
   r.readAsDataURL(f);
@@ -335,7 +346,7 @@ function processImg(f) {
 function clearPrev() {
   imgB64 = null;
   document.getElementById('prev-wrap').style.display = 'none';
-  document.querySelector('.upload-zone').style.display = 'block';
+  document.getElementById('upload-zone').style.display = 'block';
   document.getElementById('abtn').style.display = 'none';
   document.getElementById('fi').value = '';
 }
@@ -377,7 +388,7 @@ async function analyze() {
     document.getElementById('prev-wrap').style.display = 'block';
   }
   document.getElementById('loading').style.display = 'none';
-  document.querySelector('.upload-zone').style.display = 'block';
+  document.getElementById('upload-zone').style.display = 'block';
   clearPrev();
 }
 
@@ -423,7 +434,7 @@ function renderHist() {
     <div class="hstat"><div class="hstat-n">${hist.length}</div><div class="hstat-l">Sessões</div></div>
     <div class="hstat"><div class="hstat-n">${tt}</div><div class="hstat-l">Torneios</div></div>
     <div class="hstat"><div class="hstat-n ${parseFloat(roi)>=0?'pos':'neg'}">${parseFloat(roi)>=0?'+':''}${roi}%</div><div class="hstat-l">ROI</div></div>`;
-  if (!hist.length) { document.getElementById('hlist').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted2);font-family:'DM Mono',monospace;font-size:10px;">Nenhuma sessão ainda.</div>'; return; }
+  if (!hist.length) { document.getElementById('hlist').innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted2);font-size:10px;">Nenhuma sessão ainda.</div>'; return; }
   document.getElementById('hlist').innerHTML = hist.map((h,i) => {
     const luc=h.luc||0;
     return `<div class="hcard">
@@ -432,10 +443,30 @@ function renderHist() {
         <div class="hcard-profit ${luc>=0?'pos':'neg'}">${luc>=0?'+':'-'}$${Math.abs(luc).toFixed(2)}</div>
       </div>
       <div class="hcard-body" id="hb${i}">
-        ${(h.torneios||[]).map(t=>`<div class="hcard-row"><span>${t.site} — ${t.nome||''}</span><span style="font-family:'Bebas Neue',sans-serif;color:${(t.premio-t.buyin)>=0?'var(--green)':'var(--red)'};">${(t.premio-t.buyin)>=0?'+':'-'}$${Math.abs(t.premio-t.buyin).toFixed(2)}</span></div>`).join('')}
+        ${(h.torneios||[]).map(t=>`<div class="hcard-row"><span>${t.site} — ${t.nome||''}</span><span class="tprofit ${(t.premio-t.buyin)>=0?'pos':'neg'}">${(t.premio-t.buyin)>=0?'+':'-'}$${Math.abs(t.premio-t.buyin).toFixed(2)}</span></div>`).join('')}
       </div>
     </div>`;
   }).join('');
+}
+
+function addManual() {
+  const site = document.getElementById('m-site').value;
+  const buyin = parseFloat(document.getElementById('m-bi').value) || 0;
+  const nome = document.getElementById('m-nome').value.trim() || '—';
+  if (!site) return alert('Selecione o site.');
+  if (!buyin) return alert('Informe o buy-in.');
+  const now = new Date();
+  torneios.push({
+    id: Date.now()+Math.random(),
+    site, buyin, nome,
+    res: null, premio: 0,
+    data: now.toLocaleDateString('pt-BR'),
+    hora: now.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+  });
+  save(); render();
+  document.getElementById('m-site').value = '';
+  document.getElementById('m-bi').value = '';
+  document.getElementById('m-nome').value = '';
 }
 
 render();
