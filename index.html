@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Heroes — Screen Tracker</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <style>
 :root {
   --bg: #080E1C; --surface: #0F1828; --surface2: #162035;
@@ -126,6 +127,25 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
 .mbtn { padding: 12px; border-radius: 4px; font-family: 'Bebas Neue', sans-serif; font-size: 14px; letter-spacing: 2px; cursor: pointer; border: none; }
 .mbtn.ok { background: var(--green); color: #000; }
 .mbtn.cancel { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+
+/* DASHBOARD */
+.dash-wrap { flex: 1; overflow-y: auto; padding: 14px; display: none; background: var(--bg); }
+.dash-inner { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 10px; }
+.dash-kpis { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+.dash-kpi { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 12px 10px; position: relative; overflow: hidden; }
+.dash-kpi::before { content:''; position:absolute; top:0; left:0; right:0; height:2px; background: var(--accent); }
+.dash-kpi.green::before { background: var(--green); }
+.dash-kpi.red::before { background: var(--red); }
+.dash-kpi-v { font-family: 'Bebas Neue', sans-serif; font-size: 26px; line-height: 1; color: var(--accent); }
+.dash-kpi-v.pos { color: var(--green); }
+.dash-kpi-v.neg { color: var(--red); }
+.dash-kpi-l { font-family: 'DM Mono', monospace; font-size: 7px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+.dash-row { display: grid; grid-template-columns: 2fr 1fr; gap: 10px; }
+.dash-row:last-child { grid-template-columns: 1fr 1fr; }
+.dash-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 14px; }
+.dash-card--wide {}
+.dash-card-title { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 10px; }
+.dash-empty { text-align:center; padding: 60px 20px; color: var(--muted2); font-family: 'DM Mono', monospace; font-size: 10px; }
 </style>
 </head>
 <body>
@@ -135,7 +155,10 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <img src="data:image/png;base64,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" style="height:26px;width:auto;" alt="Heroes">
     Heroes <span>Screen Tracker</span>
   </div>
+  <div style="display:flex;gap:6px;">
+  <button class="hist-btn" id="dash-btn" onclick="toggleDash()">Dashboard</button>
   <button class="hist-btn" id="hist-btn" onclick="toggleHistorico()">Histórico</button>
+</div>
 </div>
 
 <div class="sbar" id="sbar">
@@ -202,6 +225,33 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   <div class="hist-wrap" id="hist-wrap">
     <div class="hstat3" id="hstats"></div>
     <div id="hlist"></div>
+  </div>
+
+  <!-- DASHBOARD -->
+  <div class="dash-wrap" id="dash-wrap">
+    <div class="dash-inner">
+      <div class="dash-kpis" id="dash-kpis"></div>
+      <div class="dash-row">
+        <div class="dash-card dash-card--wide">
+          <div class="dash-card-title">Lucro por Sessão</div>
+          <canvas id="chart-lucro" height="120"></canvas>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">ROI por Site</div>
+          <canvas id="chart-roi" height="120"></canvas>
+        </div>
+      </div>
+      <div class="dash-row">
+        <div class="dash-card">
+          <div class="dash-card-title">Volume de Torneios</div>
+          <canvas id="chart-vol" height="120"></canvas>
+        </div>
+        <div class="dash-card">
+          <div class="dash-card-title">ABI Médio por Sessão</div>
+          <canvas id="chart-abi" height="120"></canvas>
+        </div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -450,15 +500,154 @@ async function appendRow(row) {
   } catch(e) { console.error(e); }
 }
 
+
+// ── DASHBOARD ──────────────────────────────────────────────────────────────
+let dashView = false;
+let chartInstances = {};
+
+function toggleDash() {
+  // Se histórico estiver aberto, fecha
+  if (histView) { histView = false; syncViews(); }
+  dashView = !dashView;
+  syncViews();
+  if (dashView) renderDash();
+}
+
 function toggleHistorico() {
+  if (dashView) { dashView = false; syncViews(); }
   histView = !histView;
-  document.getElementById('twrap').style.display = histView ? 'none' : 'block';
-  document.getElementById('side').style.display = histView ? 'none' : 'flex';
-  document.getElementById('sbar').style.display = histView ? 'none' : 'flex';
-  document.getElementById('hist-wrap').style.display = histView ? 'block' : 'none';
-  document.getElementById('hist-btn').className = histView ? 'hist-btn active' : 'hist-btn';
+  syncViews();
   if (histView) renderHist();
 }
+
+function syncViews() {
+  document.getElementById('twrap').style.display    = (!histView && !dashView) ? 'block' : 'none';
+  document.getElementById('side').style.display     = (!histView && !dashView) ? 'flex'  : 'none';
+  document.getElementById('sbar').style.display     = (!histView && !dashView) ? 'flex'  : 'none';
+  document.getElementById('hist-wrap').style.display = histView  ? 'block' : 'none';
+  document.getElementById('dash-wrap').style.display = dashView  ? 'block' : 'none';
+  document.getElementById('hist-btn').className = histView ? 'hist-btn active' : 'hist-btn';
+  document.getElementById('dash-btn').className = dashView ? 'hist-btn active' : 'hist-btn';
+}
+
+function mkChart(id, config) {
+  if (chartInstances[id]) { chartInstances[id].destroy(); }
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  chartInstances[id] = new Chart(ctx, config);
+}
+
+function renderDash() {
+  const hist = JSON.parse(localStorage.getItem('ht_hist') || '[]');
+  const kpiEl = document.getElementById('dash-kpis');
+
+  if (!hist.length) {
+    kpiEl.innerHTML = '<div class="dash-empty" style="grid-column:1/-1">Nenhuma sessão ainda.<br>Encerre sua primeira sessão para ver o dashboard.</div>';
+    ['chart-lucro','chart-roi','chart-vol','chart-abi'].forEach(id => {
+      const c = document.getElementById(id);
+      if(c) { const ctx = c.getContext('2d'); ctx.clearRect(0,0,c.width,c.height); }
+    });
+    return;
+  }
+
+  // ── KPIs ──
+  const totalLuc  = hist.reduce((s,h) => s+(h.luc||0), 0);
+  const totalSess = hist.length;
+  const totalTorn = hist.reduce((s,h) => s+(h.torneios?.length||0), 0);
+  const totalInv  = hist.reduce((s,h) => s+(h.inv||0), 0);
+  const roi       = totalInv > 0 ? ((totalLuc/totalInv)*100).toFixed(1) : '0';
+  const itms      = hist.reduce((s,h) => s+(h.torneios||[]).filter(t=>t.res==='itm').length, 0);
+  const fins      = hist.reduce((s,h) => s+(h.torneios||[]).filter(t=>t.res && t.res!=='ativo').length, 0);
+  const itmPct    = fins > 0 ? ((itms/fins)*100).toFixed(1) : '0';
+
+  const lucCls = totalLuc >= 0 ? 'pos' : 'neg';
+  const roiCls = parseFloat(roi) >= 0 ? 'pos' : 'neg';
+
+  kpiEl.innerHTML = `
+    <div class="dash-kpi"><div class="dash-kpi-v ${lucCls}">${totalLuc>=0?'+':'-'}$${Math.abs(totalLuc).toFixed(2)}</div><div class="dash-kpi-l">Lucro Total</div></div>
+    <div class="dash-kpi"><div class="dash-kpi-v ${roiCls}">${parseFloat(roi)>=0?'+':''}${roi}%</div><div class="dash-kpi-l">ROI Global</div></div>
+    <div class="dash-kpi"><div class="dash-kpi-v">${totalSess}</div><div class="dash-kpi-l">Sessões</div></div>
+    <div class="dash-kpi"><div class="dash-kpi-v">${totalTorn}</div><div class="dash-kpi-l">Torneios</div></div>
+    <div class="dash-kpi"><div class="dash-kpi-v">${itmPct}%</div><div class="dash-kpi-l">ITM%</div></div>`;
+
+  const accent  = '#C9A84C';
+  const green   = '#2ECC71';
+  const red     = '#E74C3C';
+  const muted   = '#7A90B0';
+  const surface = '#162035';
+  const gridClr = 'rgba(30,46,74,0.8)';
+
+  const baseOpts = {
+    responsive: true,
+    maintainAspectRatio: true,
+    plugins: { legend: { display: false }, tooltip: { backgroundColor: '#0F1828', borderColor: '#1E2E4A', borderWidth: 1, titleColor: '#EEF2F8', bodyColor: '#7A90B0', titleFont: { family: 'DM Mono', size: 10 }, bodyFont: { family: 'DM Mono', size: 10 } } },
+    scales: {
+      x: { ticks: { color: muted, font: { family: 'DM Mono', size: 8 }, maxRotation: 0 }, grid: { color: gridClr } },
+      y: { ticks: { color: muted, font: { family: 'DM Mono', size: 8 } }, grid: { color: gridClr } }
+    }
+  };
+
+  // ── Chart 1: Lucro por Sessão ──
+  const sessLabels = [...hist].reverse().map(h => h.data.slice(0,5));
+  const sessLucs   = [...hist].reverse().map(h => parseFloat((h.luc||0).toFixed(2)));
+  const sessColors = sessLucs.map(v => v >= 0 ? 'rgba(46,204,113,0.7)' : 'rgba(231,76,60,0.7)');
+  const sessBorder = sessLucs.map(v => v >= 0 ? green : red);
+
+  mkChart('chart-lucro', {
+    type: 'bar',
+    data: { labels: sessLabels, datasets: [{ data: sessLucs, backgroundColor: sessColors, borderColor: sessBorder, borderWidth: 1, borderRadius: 3 }] },
+    options: { ...baseOpts,
+      plugins: { ...baseOpts.plugins, tooltip: { ...baseOpts.plugins.tooltip, callbacks: { label: ctx => (ctx.raw>=0?'+':'')+`$${ctx.raw.toFixed(2)}` } } },
+      scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, ticks: { ...baseOpts.scales.y.ticks, callback: v => (v>=0?'+':'')+`$${v}` } } }
+    }
+  });
+
+  // ── Chart 2: ROI por Site ──
+  const siteMap = {};
+  hist.forEach(h => {
+    (h.torneios||[]).forEach(t => {
+      if (!t.res || t.res === 'ativo') return;
+      if (!siteMap[t.site]) siteMap[t.site] = { inv: 0, pre: 0 };
+      siteMap[t.site].inv += t.buyin;
+      siteMap[t.site].pre += t.premio;
+    });
+  });
+  const siteLabels = Object.keys(siteMap);
+  const siteRois   = siteLabels.map(s => siteMap[s].inv > 0 ? parseFloat(((siteMap[s].pre - siteMap[s].inv)/siteMap[s].inv*100).toFixed(1)) : 0);
+  const siteColors = siteRois.map(v => v >= 0 ? 'rgba(46,204,113,0.7)' : 'rgba(231,76,60,0.7)');
+
+  mkChart('chart-roi', {
+    type: 'bar',
+    data: { labels: siteLabels, datasets: [{ data: siteRois, backgroundColor: siteColors, borderColor: siteColors.map(c=>c.replace('0.7','1')), borderWidth: 1, borderRadius: 3 }] },
+    options: { ...baseOpts, indexAxis: 'y',
+      plugins: { ...baseOpts.plugins, tooltip: { ...baseOpts.plugins.tooltip, callbacks: { label: ctx => (ctx.raw>=0?'+':'')+`${ctx.raw}%` } } },
+      scales: { x: { ...baseOpts.scales.x, ticks: { ...baseOpts.scales.x.ticks, callback: v => v+'%' } }, y: { ...baseOpts.scales.y } }
+    }
+  });
+
+  // ── Chart 3: Volume de Torneios por Sessão ──
+  const volData = [...hist].reverse().map(h => h.torneios?.length || 0);
+  mkChart('chart-vol', {
+    type: 'bar',
+    data: { labels: sessLabels, datasets: [{ data: volData, backgroundColor: 'rgba(201,168,76,0.4)', borderColor: accent, borderWidth: 1, borderRadius: 3 }] },
+    options: { ...baseOpts }
+  });
+
+  // ── Chart 4: ABI Médio por Sessão ──
+  const abiData = [...hist].reverse().map(h => {
+    const t = h.torneios?.length || 0;
+    return t > 0 ? parseFloat(((h.inv||0)/t).toFixed(2)) : 0;
+  });
+  mkChart('chart-abi', {
+    type: 'line',
+    data: { labels: sessLabels, datasets: [{ data: abiData, borderColor: accent, backgroundColor: 'rgba(201,168,76,0.08)', borderWidth: 2, pointBackgroundColor: accent, pointRadius: 3, tension: 0.3, fill: true }] },
+    options: { ...baseOpts,
+      plugins: { ...baseOpts.plugins, tooltip: { ...baseOpts.plugins.tooltip, callbacks: { label: ctx => `$${ctx.raw.toFixed(2)}` } } },
+      scales: { ...baseOpts.scales, y: { ...baseOpts.scales.y, ticks: { ...baseOpts.scales.y.ticks, callback: v => `$${v}` } } }
+    }
+  });
+}
+
 
 function renderHist() {
   const hist = JSON.parse(localStorage.getItem('ht_hist')||'[]');
