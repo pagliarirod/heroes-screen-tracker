@@ -153,7 +153,7 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <div class="upload-zone" id="upload-zone" onclick="document.getElementById('fi').click()" ondragover="ev(event)" ondragleave="el(event)" ondrop="ed(event)">
       <div class="upload-icon">📸</div>
       <div class="upload-title">Print</div>
-      <div class="upload-sub">Clique ou arraste</div>
+      <div class="upload-sub">Clique, arraste ou Ctrl+V</div>
     </div>
     <input type="file" id="fi" accept="image/*" onchange="hf(event)" style="display:none;">
 
@@ -350,6 +350,32 @@ function clearPrev() {
   document.getElementById('abtn').style.display = 'none';
   document.getElementById('fi').value = '';
 }
+
+// Suporte a Ctrl+V — cola imagem direto do clipboard
+document.addEventListener('paste', function(e) {
+  // Ignorar se o modal de prêmio estiver aberto ou se estiver digitando num input
+  if (document.getElementById('modal').style.display !== 'none') return;
+  if (['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) return;
+  const items = e.clipboardData?.items;
+  if (!items) return;
+  for (const item of items) {
+    if (item.type.startsWith('image/')) {
+      const file = item.getAsFile();
+      if (file) {
+        processImg(file);
+        // Feedback visual rápido na upload-zone caso ainda esteja visível
+        const zone = document.getElementById('upload-zone');
+        zone.style.borderColor = 'var(--accent)';
+        zone.style.background = 'var(--accent-dim)';
+        setTimeout(() => {
+          zone.style.borderColor = 'var(--border2)';
+          zone.style.background = 'var(--bg)';
+        }, 300);
+      }
+      break;
+    }
+  }
+});
 
 async function analyze() {
   if (!imgB64) return;
