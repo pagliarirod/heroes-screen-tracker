@@ -538,7 +538,10 @@ function mkChart(id, config) {
 }
 
 function renderDash() {
-  const hist = JSON.parse(localStorage.getItem('ht_hist') || '[]');
+  loadHist(hist => _renderDash(hist));
+}
+
+function _renderDash(hist) {
   const kpiEl = document.getElementById('dash-kpis');
 
   if (!hist.length) {
@@ -650,7 +653,10 @@ function renderDash() {
 
 
 function renderHist() {
-  const hist = JSON.parse(localStorage.getItem('ht_hist')||'[]');
+  loadHist(hist => _renderHist(hist));
+}
+
+function _renderHist(hist) {
   const tl = hist.reduce((s,h)=>s+(h.luc||0),0);
   const tt = hist.reduce((s,h)=>s+(h.torneios?.length||0),0);
   const ti = hist.reduce((s,h)=>s+(h.inv||0),0);
@@ -694,6 +700,25 @@ function addManual() {
   document.getElementById('m-bi').value = '';
   document.getElementById('m-nome').value = '';
 }
+
+// Carrega histórico: tenta planilha primeiro, fallback localStorage
+async function loadHist(cb) {
+  try {
+    const url = `${SCRIPT_URL}?sheetId=${SHEET_ID}&sheetName=${SHEET_NAME}`;
+    const res = await fetch(url, { mode: 'cors' });
+    const data = await res.json();
+    if (data.ok && Array.isArray(data.hist)) {
+      // Sincroniza localStorage com dados da planilha
+      localStorage.setItem('ht_hist', JSON.stringify(data.hist));
+      return cb(data.hist);
+    }
+  } catch (e) {
+    console.warn('Planilha indisponível, usando localStorage:', e.message);
+  }
+  const hist = JSON.parse(localStorage.getItem('ht_hist') || '[]');
+  cb(hist);
+}
+
 
 render();
 </script>
