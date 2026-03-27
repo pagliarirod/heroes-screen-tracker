@@ -133,6 +133,12 @@ input[type=file] { display: none; }
 .empty { text-align: center; padding: 48px 20px; color: var(--muted2); }
 .empty .big { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--border2); letter-spacing: 4px; display: block; margin-bottom: 8px; }
 
+.t-site-select { background: var(--surface2); border: 1px solid var(--border); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; padding: 4px 8px; border-radius: 3px; cursor: pointer; letter-spacing: 1px; text-transform: uppercase; }
+.t-site-select:focus { outline: none; border-color: var(--accent); }
+.t-buyin-inp { background: var(--surface2); border: 1px solid var(--border); color: var(--accent); font-family: 'Bebas Neue', sans-serif; font-size: 22px; width: 110px; padding: 2px 8px; border-radius: 3px; text-align: right; }
+.t-buyin-inp:focus { outline: none; border-color: var(--accent); }
+.t-name-inp { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 4px 0; margin-bottom: 12px; }
+.t-name-inp:focus { outline: none; border-bottom-color: var(--accent); }
 .end-session-btn { width: 100%; padding: 14px; background: none; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 4px; margin-top: 8px; transition: all 0.2s; }
 .end-session-btn:hover { border-color: var(--accent); color: var(--accent); }
 
@@ -383,14 +389,17 @@ function renderTorneios() {
     const siteClass = getSiteClass(t.site);
     const lucro = t.resultado ? (t.premio - t.buyin) : null;
     const isPos = lucro !== null && lucro >= 0;
+    const tid = t.id.toString().replace('.','_');
 
     return `
-    <div class="t-card" id="tc-${t.id.toString().replace('.','_')}">
+    <div class="t-card" id="tc-${tid}">
       <div class="t-header">
-        <span class="t-site-badge ${siteClass}">${t.site}</span>
-        <span class="t-buyin">$${t.buyin.toFixed(2)}</span>
+        <select class="t-site-select" onchange="editField('${t.id}', 'site', this.value)">
+          ${['GGPoker','PokerStars','PokerStars ES','WPT Global','PartyPoker','Ya Poker','iPoker','WPN','Champion','Slot Poker','Outro'].map(s => `<option value="${s}" ${s===t.site?'selected':''}>${s}</option>`).join('')}
+        </select>
+        <input class="t-buyin-inp" type="number" value="${t.buyin}" step="0.01" min="0" onchange="editField('${t.id}', 'buyin', parseFloat(this.value))" onblur="editField('${t.id}', 'buyin', parseFloat(this.value))">
       </div>
-      <div class="t-name">${t.nome}</div>
+      <input class="t-name-inp" type="text" value="${t.nome}" onchange="editField('${t.id}', 'nome', this.value)" onblur="editField('${t.id}', 'nome', this.value)">
       ${t.resultado ? `
         <div class="t-result">
           <span class="t-result-label">${t.resultado === 'bust' ? 'Bust' : 'ITM — Prêmio $' + t.premio.toFixed(2)}</span>
@@ -398,6 +407,7 @@ function renderTorneios() {
         </div>
       ` : `
         <div class="t-actions">
+          <button class="t-btn" style="flex:0.3;color:var(--red);border-color:var(--red);font-size:16px;" onclick="removeTorneio('${t.id}')">✕</button>
           <button class="t-btn bust" onclick="markBust('${t.id}')">✗ Bust</button>
           <button class="t-btn itm" onclick="openITM('${t.id}')">$ ITM</button>
         </div>
@@ -561,6 +571,21 @@ function toggleHist(i) {
 }
 
 // ── STORAGE ────────────────────────────────────────────────────────────────
+function editField(id, field, value) {
+  const t = torneios.find(x => x.id.toString() === id.toString());
+  if (!t) return;
+  if (field === 'buyin') t.buyin = parseFloat(value) || 0;
+  else t[field] = value;
+  saveTorneios();
+  updateStatusBar();
+}
+
+function removeTorneio(id) {
+  torneios = torneios.filter(x => x.id.toString() !== id.toString());
+  saveTorneios();
+  renderTorneios();
+}
+
 function saveTorneios() {
   localStorage.setItem('heroes_tracker_session', JSON.stringify(torneios));
 }
