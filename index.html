@@ -68,11 +68,17 @@ input[type=file] { display: none; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 /* TOURNAMENT CARDS */
-.t-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 10px 12px; margin-bottom: 8px; animation: fadeUp 0.25s ease both; }
-@keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+.t-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.t-table thead tr { border-bottom: 1px solid var(--border2); }
+.t-table thead th { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 6px; text-align: left; font-weight: 400; }
+.t-table thead th:last-child { text-align: right; }
+.t-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+.t-table tbody tr:hover { background: var(--surface2); }
+.t-table tbody tr.done { opacity: 0.6; }
+.t-table td { padding: 5px 6px; vertical-align: middle; }
+.t-table td:last-child { text-align: right; }
 
-.t-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 10px; }
-.t-site-badge { font-family: 'DM Mono', monospace; font-size: 10px; padding: 3px 8px; border-radius: 2px; letter-spacing: 1px; text-transform: uppercase; }
+.t-site-badge { font-family: 'DM Mono', monospace; font-size: 8px; padding: 2px 5px; border-radius: 2px; letter-spacing: 0.5px; text-transform: uppercase; white-space: nowrap; }
 .t-site-gg { background: rgba(52,152,219,0.15); color: #5dade2; border: 1px solid rgba(52,152,219,0.3); }
 .t-site-ps { background: rgba(155,89,182,0.15); color: #a569bd; border: 1px solid rgba(155,89,182,0.3); }
 .t-site-wpt { background: rgba(46,204,113,0.15); color: #58d68d; border: 1px solid rgba(46,204,113,0.3); }
@@ -80,20 +86,25 @@ input[type=file] { display: none; }
 .t-site-pp { background: rgba(231,76,60,0.15); color: #ec7063; border: 1px solid rgba(231,76,60,0.3); }
 .t-site-other { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
-.t-buyin { font-family: 'Bebas Neue', sans-serif; font-size: 22px; color: var(--accent); line-height: 1; }
-.t-name { font-size: 13px; color: var(--text); margin-bottom: 12px; line-height: 1.4; }
+.t-name-cell { color: var(--text); font-size: 11px; max-width: 160px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.t-buyin-cell { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); white-space: nowrap; }
+.t-profit-cell { font-family: 'Bebas Neue', sans-serif; font-size: 14px; white-space: nowrap; }
+.t-profit-cell.pos { color: var(--green); }
+.t-profit-cell.neg { color: var(--red); }
 
-.t-actions { display: flex; gap: 6px; }
-.t-btn { flex: 1; padding: 7px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 1px; cursor: pointer; border-radius: 4px; transition: all 0.15s; text-transform: uppercase; text-align: center; }
+.t-btn-row { display: flex; gap: 4px; justify-content: flex-end; }
+.t-btn { padding: 3px 8px; border: 1px solid var(--border); background: var(--surface2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; cursor: pointer; border-radius: 3px; transition: all 0.15s; text-transform: uppercase; white-space: nowrap; }
 .t-btn:hover { border-color: var(--border2); color: var(--text); }
 .t-btn.bust { border-color: var(--red); color: var(--red); background: var(--red-dim); }
 .t-btn.itm { border-color: var(--green); color: var(--green); background: var(--green-dim); }
+.t-btn.del { border-color: var(--border); color: var(--muted2); font-size: 10px; padding: 3px 6px; }
 
-.t-result { display: flex; align-items: center; justify-content: space-between; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.t-result-label { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
-.t-result-val { font-family: 'Bebas Neue', sans-serif; font-size: 20px; }
-.t-result-val.pos { color: var(--green); }
-.t-result-val.neg { color: var(--red); }
+.t-site-select { background: transparent; border: none; color: var(--muted); font-family: 'DM Mono', monospace; font-size: 8px; cursor: pointer; padding: 0; }
+.t-site-select:focus { outline: none; }
+.t-buyin-inp { background: transparent; border: none; color: var(--accent); font-family: 'Bebas Neue', sans-serif; font-size: 14px; width: 60px; padding: 0; text-align: left; }
+.t-buyin-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
+.t-name-inp { background: transparent; border: none; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 11px; width: 100%; padding: 0; }
+.t-name-inp:focus { outline: none; border-bottom: 1px solid var(--accent); }
 
 /* ITM MODAL */
 .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
