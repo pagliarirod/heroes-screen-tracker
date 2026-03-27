@@ -23,9 +23,9 @@
   --red-dim: rgba(231,76,60,0.12);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--bg); background-image: radial-gradient(ellipse at top, #0F1E3A 0%, #080E1C 60%); color: var(--text); font-family: 'DM Sans', sans-serif; min-height: 100vh; padding: 0 0 20px; }
+body { background: var(--bg); background-image: radial-gradient(ellipse at top, #0F1E3A 0%, #080E1C 60%); color: var(--text); font-family: 'DM Sans', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
 
-.header { border-top: 2px solid var(--accent); border-bottom: 1px solid var(--border); padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; background: rgba(8,14,28,0.97); backdrop-filter: blur(8px); position: sticky; top: 0; z-index: 100; }
+.header { border-top: 2px solid var(--accent); border-bottom: 1px solid var(--border); padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; background: rgba(8,14,28,0.97); flex-shrink: 0; }
 .logo-wrap { display: flex; align-items: center; gap: 10px; }
 .logo { font-family: 'Bebas Neue', sans-serif; font-size: 17px; letter-spacing: 3px; color: #fff; line-height: 1; }
 .logo span { color: var(--accent); font-size: 9px; font-family: 'DM Mono', monospace; letter-spacing: 3px; display: block; margin-top: 2px; }
@@ -35,7 +35,7 @@ body { background: var(--bg); background-image: radial-gradient(ellipse at top, 
 .nav-btn.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
 .nav-btn:hover:not(.active) { border-color: var(--border2); color: var(--text); }
 
-.main { max-width: 680px; margin: 0 auto; padding: 12px 14px; }
+.main { display: none; } .body-wrap { display: flex; flex: 1; overflow: hidden; } .sidebar { width: 190px; flex-shrink: 0; border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 10px; gap: 8px; overflow-y: auto; background: var(--surface); } .table-wrap { flex: 1; overflow-y: auto; }
 .view { display: none; }
 .view.active { display: block; }
 
@@ -69,7 +69,7 @@ input[type=file] { display: none; }
 
 /* TOURNAMENT CARDS */
 .t-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.t-table thead tr { border-bottom: 1px solid var(--border2); }
+.t-table thead { position: sticky; top: 0; z-index: 10; background: var(--surface); } .t-table thead tr { border-bottom: 1px solid var(--border2); }
 .t-table thead th { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding: 5px 6px; text-align: left; font-weight: 400; }
 .t-table thead th:last-child { text-align: right; }
 .t-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
@@ -121,12 +121,12 @@ input[type=file] { display: none; }
 .modal-btn.cancel { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
 
 /* STATUS BAR */
-.status-bar { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-bottom: 10px; }
-.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 6px; text-align: center; }
-.stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 18px; color: var(--accent); line-height: 1; display: block; }
+.status-bar { display: flex; gap: 6px; padding: 8px 14px; background: var(--bg); flex-shrink: 0; border-bottom: 1px solid var(--border); }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: 4px; padding: 5px 10px; display: flex; align-items: center; gap: 8px; flex: 1; }
+.stat-n { font-family: 'Bebas Neue', sans-serif; font-size: 16px; color: var(--accent); line-height: 1; }
 .stat-n.pos { color: var(--green); }
 .stat-n.neg { color: var(--red); }
-.stat-l { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; display: block; }
+.stat-l { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
 
 /* HISTORY */
 .hist-card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
@@ -141,6 +141,7 @@ input[type=file] { display: none; }
 .hist-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-bottom: 1px solid var(--border); font-size: 13px; }
 .hist-row:last-child { border-bottom: none; }
 
+.sidebar-label { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--muted2); letter-spacing: 1.5px; text-transform: uppercase; padding-top: 4px; border-top: 1px solid var(--border); } .side-stat { display: flex; justify-content: space-between; align-items: center; padding: 2px 0; } .side-stat-l { font-family: 'DM Mono', monospace; font-size: 9px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; } .side-stat-v { font-family: 'Bebas Neue', sans-serif; font-size: 14px; color: var(--accent); } .side-stat-v.pos { color: var(--green); } .side-stat-v.neg { color: var(--red); }
 .empty { text-align: center; padding: 48px 20px; color: var(--muted2); }
 .empty .big { font-family: 'Bebas Neue', sans-serif; font-size: 36px; color: var(--border2); letter-spacing: 4px; display: block; margin-bottom: 8px; }
 
@@ -150,7 +151,7 @@ input[type=file] { display: none; }
 .t-buyin-inp:focus { outline: none; border-color: var(--accent); }
 .t-name-inp { width: 100%; background: transparent; border: none; border-bottom: 1px solid var(--border); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 3px 0; margin-bottom: 8px; }
 .t-name-inp:focus { outline: none; border-bottom-color: var(--accent); }
-.end-session-btn { width: 100%; padding: 10px; background: none; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; border-radius: 4px; margin-top: 6px; transition: all 0.2s; }
+.end-session-btn { width: 100%; padding: 8px; background: none; border: 1px solid var(--border2); color: var(--muted); font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 1px; text-transform: uppercase; cursor: pointer; border-radius: 4px; transition: all 0.2s; } .end-session-btn:hover { border-color: var(--accent); color: var(--accent); }
 .end-session-btn:hover { border-color: var(--accent); color: var(--accent); }
 
 .tip { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 8px 12px; margin-bottom: 10px; font-size: 11px; color: var(--muted); line-height: 1.5; }
@@ -164,61 +165,66 @@ input[type=file] { display: none; }
     <img id="logo-img" style="height:24px;width:auto;" alt="Heroes">
     <div class="logo">Heroes<span>Screen Tracker</span></div>
   </div>
-  <div class="nav">
-    <button class="nav-btn active" onclick="showView('tracker', this)">Sessão</button>
-    <button class="nav-btn" onclick="showView('historico', this)">Histórico</button>
-  </div>
+  <button class="nav-btn" onclick="showView('historico', this)" id="btn-historico" style="background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:10px;padding:5px 12px;cursor:pointer;border-radius:3px;">Histórico</button>
 </div>
 
 <div class="main">
 
-  <!-- TRACKER -->
-  <div class="view active" id="view-tracker">
+  <!-- STATUS BAR -->
+  <div class="status-bar" id="status-bar-top">
+    <div class="stat"><div><div class="stat-l">Ativos</div><div class="stat-n" id="s-ativos">0</div></div></div>
+    <div class="stat"><div><div class="stat-l">Total</div><div class="stat-n" id="s-total">0</div></div></div>
+    <div class="stat"><div><div class="stat-l">Investido</div><div class="stat-n" id="s-inv">$0</div></div></div>
+    <div class="stat"><div><div class="stat-l">ABI</div><div class="stat-n" id="s-abi">$0</div></div></div>
+    <div class="stat"><div><div class="stat-l">Prêmios</div><div class="stat-n" id="s-premios">$0</div></div></div>
+    <div class="stat"><div><div class="stat-l">Lucro</div><div class="stat-n" id="s-lucro">$0</div></div></div>
+  </div>
 
-    <!-- STATUS -->
-    <div class="status-bar">
-      <div class="stat"><span class="stat-n" id="s-ativos">0</span><span class="stat-l">Ativos</span></div>
-      <div class="stat"><span class="stat-n" id="s-total">0</span><span class="stat-l">Total</span></div>
-      <div class="stat"><span class="stat-n" id="s-inv">$0</span><span class="stat-l">Invest.</span></div>
-      <div class="stat"><span class="stat-n" id="s-abi">$0</span><span class="stat-l">ABI</span></div>
-      <div class="stat"><span class="stat-n" id="s-lucro">$0</span><span class="stat-l">Lucro</span></div>
+  <!-- BODY WRAP -->
+  <div class="body-wrap" id="view-tracker">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
+        <div class="upload-icon">📸</div>
+        <div class="upload-title">Print</div>
+        <div class="upload-sub">Clique ou arraste</div>
+      </div>
+      <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
+
+      <div id="preview-wrap" style="display:none;">
+        <img id="preview-img" alt="preview" style="width:100%;border-radius:4px;border:1px solid var(--border);display:block;margin-bottom:6px;">
+        <button style="width:100%;background:none;border:1px solid var(--border);color:var(--muted);font-family:'DM Mono',monospace;font-size:9px;padding:4px;border-radius:3px;cursor:pointer;" onclick="clearPreview()">✕ Remover</button>
+      </div>
+
+      <button class="analyze-btn" id="analyze-btn" onclick="analyzeImage()" style="display:none;">Identificar →</button>
+
+      <div id="loading-card" style="display:none;text-align:center;padding:12px 0;">
+        <div class="spinner" style="width:24px;height:24px;border:2px solid var(--border2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 6px;"></div>
+        <div style="font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);">Analisando...</div>
+      </div>
+
+      <div class="sidebar-label" id="sidebar-stats-label" style="display:none;">Sessão</div>
+      <div id="sidebar-stats" style="display:none;">
+        <div class="side-stat"><span class="side-stat-l">ITM</span><span class="side-stat-v" id="ss-itm">0</span></div>
+        <div class="side-stat"><span class="side-stat-l">Bust</span><span class="side-stat-v" id="ss-bust">0</span></div>
+        <div class="side-stat"><span class="side-stat-l">ITM%</span><span class="side-stat-v" id="ss-itmpct">0%</span></div>
+        <div class="side-stat"><span class="side-stat-l">ROI</span><span class="side-stat-v" id="ss-roi">0%</span></div>
+      </div>
+
+      <div style="flex:1;"></div>
+      <button class="end-session-btn" onclick="endSession()">Encerrar Sessão</button>
     </div>
 
-    <!-- UPLOAD -->
-    <div class="sec">Adicionar Torneios</div>
-    <div class="tip"><strong>Como usar:</strong> tire um print da sua tela com as mesas abertas e envie abaixo. A IA vai identificar automaticamente todos os torneios visíveis. Para registrar bust ou ITM, use os botões em cada torneio.</div>
-
-    <div class="upload-zone" id="upload-zone" onclick="document.getElementById('file-input').click()" ondragover="dragOver(event)" ondragleave="dragLeave(event)" ondrop="dropFile(event)">
-      <div class="upload-icon">📸</div>
-      <div class="upload-title">Enviar Print da Tela</div>
-      <div class="upload-sub">Clique ou arraste o screenshot aqui</div>
-    </div>
-    <input type="file" id="file-input" accept="image/*" onchange="handleFile(event)">
-
-    <div id="preview-wrap" class="preview-wrap" style="display:none;">
-      <img id="preview-img" alt="preview">
-      <button class="preview-close" onclick="clearPreview()">✕ Remover</button>
-    </div>
-
-    <button class="analyze-btn" id="analyze-btn" onclick="analyzeImage()" style="display:none;">Identificar Torneios →</button>
-
-    <div id="loading-card" class="loading-card" style="display:none;">
-      <div class="spinner"></div>
-      <div class="loading-title">Analisando Print</div>
-      <div class="loading-sub">A IA está identificando os torneios...</div>
-    </div>
-
-    <!-- TORNEIOS ATIVOS -->
-    <div id="torneios-section" style="display:none;">
-      <div class="sec" style="margin-top:8px;">Torneios Ativos</div>
+    <!-- TABLE -->
+    <div class="table-wrap">
       <div id="torneios-list"></div>
-      <button class="end-session-btn" onclick="endSession()">Encerrar Sessão e Salvar</button>
     </div>
 
   </div>
 
   <!-- HISTORICO -->
-  <div class="view" id="view-historico">
+  <div id="view-historico" style="display:none;padding:16px;overflow-y:auto;flex:1;">
     <div class="status-bar">
       <div class="stat"><span class="stat-n" id="h-sessoes">0</span><span class="stat-l">Sessões</span></div>
       <div class="stat"><span class="stat-n" id="h-torneios">0</span><span class="stat-l">Torneios</span></div>
@@ -447,13 +453,31 @@ function updateStatusBar() {
   const luc = pre - inv;
 
   const abi = torneios.length > 0 ? inv / torneios.length : 0;
+  const itm = torneios.filter(t => t.resultado && t.resultado !== 'bust').length;
+  const bust = torneios.filter(t => t.resultado === 'bust').length;
+  const finalizados = torneios.filter(t => t.resultado).length;
+  const itmPct = finalizados > 0 ? ((itm/finalizados)*100).toFixed(0) : 0;
+  const roi = inv > 0 ? (((pre-inv)/inv)*100).toFixed(0) : 0;
+
   document.getElementById('s-ativos').textContent = ativos;
   document.getElementById('s-total').textContent = torneios.length;
   document.getElementById('s-inv').textContent = '$' + inv.toFixed(0);
   document.getElementById('s-abi').textContent = '$' + abi.toFixed(0);
+  document.getElementById('s-premios').textContent = '$' + pre.toFixed(0);
   const lEl = document.getElementById('s-lucro');
   lEl.textContent = (luc >= 0 ? '+' : '') + '$' + luc.toFixed(0);
   lEl.className = 'stat-n ' + (luc >= 0 ? 'pos' : 'neg');
+
+  if (torneios.length > 0) {
+    document.getElementById('sidebar-stats-label').style.display = 'block';
+    document.getElementById('sidebar-stats').style.display = 'block';
+    document.getElementById('ss-itm').textContent = itm;
+    document.getElementById('ss-bust').textContent = bust;
+    document.getElementById('ss-itmpct').textContent = itmPct + '%';
+    const rEl = document.getElementById('ss-roi');
+    rEl.textContent = (parseInt(roi)>=0?'+':'') + roi + '%';
+    rEl.className = 'side-stat-v ' + (parseInt(roi)>=0?'pos':'neg');
+  }
 }
 
 // ── RESULTS ────────────────────────────────────────────────────────────────
@@ -609,11 +633,19 @@ function loadTorneios() {
 }
 
 function showView(name, btn) {
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.getElementById('view-' + name).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (name === 'historico') renderHistorico();
+  const tracker = document.getElementById('view-tracker');
+  const statusBar = document.getElementById('status-bar-top');
+  const hist = document.getElementById('view-historico');
+  if (name === 'historico') {
+    tracker.style.display = 'none';
+    statusBar.style.display = 'none';
+    hist.style.display = 'block';
+    renderHistorico();
+  } else {
+    tracker.style.display = 'flex';
+    statusBar.style.display = 'flex';
+    hist.style.display = 'none';
+  }
 }
 
 init();
