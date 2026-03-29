@@ -398,8 +398,8 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
   <!-- TABELA PRINCIPAL -->
   <div class="twrap" id="twrap">
     <table class="ttable">
-      <thead><tr><th>Site</th><th>Torneio</th><th>BI</th><th>Resultado</th><th></th></tr></thead>
-      <tbody id="tbody"><tr><td colspan="5" class="empty-msg">Envie um print para adicionar torneios</td></tr></tbody>
+      <thead><tr><th>Site</th><th>Torneio</th><th>BI</th><th style="width:70px;">Bounty</th><th>Resultado</th><th></th></tr></thead>
+      <tbody id="tbody"><tr><td colspan="6" class="empty-msg">Envie um print para adicionar torneios</td></tr></tbody>
     </table>
   </div>
 
@@ -455,9 +455,9 @@ body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-s
     <div class="modal-title" id="modal-title">ITM — Prêmio</div>
     <div class="modal-sub" id="modal-sub"></div>
     <input type="number" class="modal-inp" id="modal-val" placeholder="Prêmio $0.00" step="0.01" min="0">
-    <input type="number" id="modal-bounty" placeholder="Bounty $0.00 (opcional)" step="0.01" min="0"
+    <input type="number" id="modal-bounty" placeholder="Bounty extra no ITM $0.00" step="0.01" min="0"
       style="width:100%;background:var(--surface2);border:1px solid var(--border);color:var(--text);font-family:'DM Mono',monospace;font-size:14px;padding:10px 12px;border-radius:4px;margin-bottom:8px;text-align:center;">
-    <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;text-align:center;">BOUNTY SOMA AO PRÊMIO · NÃO AFETA ITM%</div>
+    <div style="font-family:'DM Mono',monospace;font-size:8px;color:var(--muted);letter-spacing:1px;margin-bottom:10px;text-align:center;">BOUNTY ACUMULADO DA LINHA + EXTRA AQUI · NÃO AFETA ITM%</div>
     <div class="modal-btns">
       <button class="mbtn cancel" onclick="document.getElementById('modal').style.display='none'">Cancelar</button>
       <button class="mbtn ok" onclick="confirmITM()">Confirmar</button>
@@ -534,7 +534,7 @@ function save() { localStorage.setItem('ht_sess', JSON.stringify(torneios)); }
 function render() {
   const tbody = document.getElementById('tbody');
   if (torneios.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="5" class="empty-msg">Envie um print para adicionar torneios</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="empty-msg">Envie um print para adicionar torneios</td></tr>';
     updateStats(); return;
   }
   const sOpts = SITES.map(s => `<option value="${s}">${s}</option>`).join('');
@@ -542,24 +542,33 @@ function render() {
     const luc = t.res ? t.premio - t.buyin : null;
     const isPos = luc !== null && luc >= 0;
     const sc = siteClass(t.site);
-    // Tag de bounty no resultado
-    const bountyTag = (t.bounty > 0)
-      ? `<span style="font-family:'DM Mono',monospace;font-size:7px;padding:1px 5px;border-radius:2px;margin-left:5px;background:rgba(201,168,76,0.15);color:var(--accent);border:1px solid rgba(201,168,76,0.35);">+$${t.bounty.toFixed(2)} B</span>`
+    // Bounty acumulado — editável ao vivo quando ativo, tag no resultado quando finalizado
+    const bountyVal = t.bounty || 0;
+    const bountyCell = t.res
+      ? (bountyVal > 0 ? `<span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);">$${bountyVal.toFixed(2)}</span>` : '<span style="color:var(--muted2);font-size:10px;">—</span>')
+      : `<input class="bi-inp" type="number" value="${bountyVal||''}" step="0.01" min="0" placeholder="0"
+           style="width:58px;color:var(--accent);"
+           onblur="ef('${t.id}','bounty',parseFloat(this.value)||0)"
+           oninput="efLive('${t.id}','bounty',parseFloat(this.value)||0)"
+           title="Bounty acumulado">`;
+    // Resultado: lucro total + breakdown bounty quando há bounty
+    const bountyBreak = (t.res && bountyVal > 0)
+      ? `<span style="font-family:'DM Mono',monospace;font-size:8px;color:var(--accent);margin-left:4px;opacity:0.85;">(+$${bountyVal.toFixed(2)}B)</span>`
       : '';
     const resultCell = t.res
-      ? `<span class="tprofit ${isPos?'pos':'neg'}">${isPos?'+':'-'}$${Math.abs(luc).toFixed(2)}</span>${bountyTag}`
+      ? `<span class="tprofit ${isPos?'pos':'neg'}">${isPos?'+':'-'}$${Math.abs(luc).toFixed(2)}</span>${bountyBreak}`
       : '';
     const actionBtns = t.res
       ? `<button class="tbtn del" onclick="rm('${t.id}')">✕</button>`
       : `<button class="tbtn del" onclick="rm('${t.id}')">✕</button>
          <button class="tbtn" style="border-color:#5dade2;color:#5dade2;background:rgba(52,152,219,0.1);" onclick="mkReentrada('${t.id}')">↺ Re</button>
-         <button class="tbtn" style="border-color:rgba(201,168,76,0.5);color:var(--accent);background:var(--accent-dim);" onclick="mkBustBounty('${t.id}')">B+$</button>
          <button class="tbtn bust" onclick="mkBust('${t.id}')">Bust</button>
          <button class="tbtn itm" onclick="mkITM('${t.id}')">ITM</button>`;
     return `<tr class="${t.res?'done':''}">
       <td><select class="site-sel ${sc}" onchange="ef('${t.id}','site',this.value)">${SITES.map(s=>`<option value="${s}"${s===t.site?' selected':''}>${s}</option>`).join('')}</select></td>
       <td class="tname"><input class="edit-inp tname" type="text" value="${t.nome}" onblur="ef('${t.id}','nome',this.value)"></td>
       <td><input class="bi-inp" type="number" value="${t.buyin}" step="0.01" onblur="ef('${t.id}','buyin',parseFloat(this.value)||0)"></td>
+      <td>${bountyCell}</td>
       <td>${resultCell}</td>
       <td><div class="btngrp">${actionBtns}</div></td>
     </tr>`;
@@ -600,31 +609,28 @@ function updateStats() {
 function ef(id, field, val) {
   const t = torneios.find(x=>x.id==id);
   if (!t) return;
-  t[field] = field==='buyin' ? parseFloat(val)||0 : val;
+  t[field] = (field==='buyin'||field==='bounty') ? parseFloat(val)||0 : val;
   save(); render();
+}
+function efLive(id, field, val) {
+  // Atualiza o dado sem re-renderizar — mantém foco no input de bounty
+  const t = torneios.find(x=>x.id==id);
+  if (!t) return;
+  t[field] = parseFloat(val) || 0;
+  save();
+  // Atualiza só as stats sem re-renderizar a tabela
+  updateStats();
 }
 function rm(id) { torneios = torneios.filter(x=>x.id!=id); save(); render(); }
 function mkBust(id) {
   const t = torneios.find(x=>x.id==id);
   if (!t) return;
-  // Bust direto sem bounty
-  t.res = 'bust'; t.premio = 0; t.bounty = 0;
+  // Bust — preserva bounty acumulado ao vivo; premio = bounty acumulado
+  t.res    = 'bust';
+  t.premio = t.bounty || 0; // se tinha bounty acumulado, conta no resultado
   save(); render();
 }
-function mkBustBounty(id) {
-  // Bust com bounty — reutiliza o modal ITM em modo bounty-only
-  itmId = id;
-  const t = torneios.find(x=>x.id==id);
-  document.getElementById('modal-title').textContent = 'Bust — Bounty';
-  document.getElementById('modal-sub').textContent = t.site + ' — $' + t.buyin;
-  document.getElementById('modal-val').value = '0';
-  document.getElementById('modal-val').placeholder = 'Prêmio $0 (bust)';
-  document.getElementById('modal-bounty').value = '';
-  document.getElementById('modal').style.display = 'flex';
-  // Override confirmITM para marcar como bust
-  window._bustBountyMode = true;
-  setTimeout(()=>document.getElementById('modal-bounty').focus(), 200);
-}
+
 function mkITM(id) {
   itmId = id;
   const t = torneios.find(x=>x.id==id);
@@ -638,19 +644,12 @@ function mkITM(id) {
 function confirmITM() {
   const t = torneios.find(x=>x.id==itmId);
   if (t) {
-    const premio = parseFloat(document.getElementById('modal-val').value) || 0;
-    const bounty = parseFloat(document.getElementById('modal-bounty').value) || 0;
-    if (window._bustBountyMode) {
-      t.res    = 'bust';
-      t.premio = bounty;
-      t.bounty = bounty;
-      window._bustBountyMode = false;
-      document.getElementById('modal-val').placeholder = 'Prêmio $0.00';
-    } else {
-      t.res    = 'itm';
-      t.premio = premio + bounty;
-      t.bounty = bounty;
-    }
+    const premio  = parseFloat(document.getElementById('modal-val').value) || 0;
+    const bountyModal = parseFloat(document.getElementById('modal-bounty').value) || 0;
+    const bountyAcum  = t.bounty || 0; // bounty já acumulado ao vivo na linha
+    t.res    = 'itm';
+    t.premio = premio + bountyAcum + bountyModal; // prêmio + bounty acumulado + bounty extra no modal
+    t.bounty = bountyAcum + bountyModal;
     save(); render();
   }
   document.getElementById('modal').style.display = 'none';
